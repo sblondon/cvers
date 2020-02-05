@@ -15,6 +15,13 @@ fn main() {
 }
 
 fn compare(version_a: String, version_b: String){
-    println!("Version A {}", version_a);
-    println!("Version B {}", version_b);
+    let v_a: i32 = version_a.parse().unwrap();
+    let v_b: i32 = version_b.parse().unwrap();
+    if v_a > v_b {
+        println!("A {} > B {}", version_a, version_b);
+    } else if v_a == v_b {
+        println!("A {} == B {}", version_a, version_b);
+    } else {
+        println!("A {} < B {}", version_a, version_b);
+    }
 }
