@@ -10,8 +10,15 @@ pub enum Comparison {
 }
 
 pub fn compare(version_a: String, version_b: String)-> Comparison{
-    let v_a: i32 = version_a.parse().unwrap();
-    let v_b: i32 = version_b.parse().unwrap();
+    let mut v_a: Vec<i32> = Vec::new();
+    for element in version_a.split('.'){
+        v_a.push(element.parse().unwrap());
+    }
+    let mut v_b: Vec<i32> = Vec::new();
+    for element in version_b.split('.'){
+        v_b.push(element.parse().unwrap());
+    }
+
     if v_a > v_b {
         return Comparison::SUP;
     } else if v_a == v_b {
@@ -39,8 +46,16 @@ mod tests {
         assert_eq!(compare("2".to_string(), "2".to_string()), Comparison::EQU);
     }
     #[test]
+    fn test_compare_equal_with_two_dot() {
+        assert_eq!(compare("2.0".to_string(), "2.0".to_string()), Comparison::EQU);
+    }
+    #[test]
     fn test_compare_inf() {
         assert_eq!(compare("3".to_string(), "2".to_string()), Comparison::SUP);
+    }
+    #[test]
+    fn test_compare_inf_with_two_dot() {
+        assert_eq!(compare("2.0".to_string(), "2.1".to_string()), Comparison::INF);
     }
     #[test]
     fn test_compare_sup() {
