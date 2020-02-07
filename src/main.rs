@@ -11,7 +11,10 @@ fn main() {
 
     let version_a = &args[1];
     let version_b = &args[2];
-    compare(version_a.to_string(), version_b.to_string());
+    println!("{}", display(
+            compare(version_a.to_string(), version_b.to_string())
+        )
+    );
 }
 
 fn compare(version_a: String, version_b: String)-> i32{
@@ -23,6 +26,17 @@ fn compare(version_a: String, version_b: String)-> i32{
         return 0;
     } else {
         return 1;
+    }
+
+}
+
+fn display(comparison: i32)-> std::string::String{
+    if comparison == 1 {
+        return "<".to_string();
+    } else if comparison == 0 {
+        return "=".to_string();
+    } else {
+        return ">".to_string();
     }
 
 }
@@ -43,5 +57,16 @@ mod tests {
     fn test_compare_sup() {
         assert_eq!(compare("2".to_string(), "3".to_string()), 1);
     }
-
+    #[test]
+    fn test_display_equal() {
+        assert_eq!(display(1), "<".to_string());
+    }
+    #[test]
+    fn test_display_inf() {
+        assert_eq!(display(0), "=".to_string());
+    }
+    #[test]
+    fn test_display_sup() {
+        assert_eq!(display(-1), ">".to_string());
+    }
 }
