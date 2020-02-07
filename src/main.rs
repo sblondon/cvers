@@ -30,15 +30,13 @@ fn compare(version_a: String, version_b: String)-> i32{
 
 }
 
-fn display(comparison: i32)-> std::string::String{
-    if comparison == 1 {
-        return "<".to_string();
-    } else if comparison == 0 {
-        return "=".to_string();
-    } else {
-        return ">".to_string();
+fn display(comparison: i32)-> String{
+    match comparison {
+        -1 => {return ">".to_string();},
+        0 => {return "=".to_string();},
+        1 => {return "<".to_string();},
+        _ => {return "....".to_string();}
     }
-
 }
 
 #[cfg(test)]
