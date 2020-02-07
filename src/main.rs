@@ -1,5 +1,6 @@
 use std::env;
 use std::process;
+use std::fmt::Debug;
 
 
 fn main() {
@@ -17,25 +18,32 @@ fn main() {
     );
 }
 
-fn compare(version_a: String, version_b: String)-> i32{
+#[derive(PartialEq)]
+#[derive(Debug)]
+enum Comparison {
+    INF,
+    EQU,
+    SUP
+}
+
+fn compare(version_a: String, version_b: String)-> Comparison{
     let v_a: i32 = version_a.parse().unwrap();
     let v_b: i32 = version_b.parse().unwrap();
     if v_a > v_b {
-        return -1;
+        return Comparison::SUP;
     } else if v_a == v_b {
-        return 0;
+        return Comparison::EQU;
     } else {
-        return 1;
+        return Comparison::INF;
     }
 
 }
 
-fn display(comparison: i32)-> String{
+fn display(comparison: Comparison)-> String{
     match comparison {
-        -1 => {return ">".to_string();},
-        0 => {return "=".to_string();},
-        1 => {return "<".to_string();},
-        _ => {return "....".to_string();}
+        Comparison::INF => {return "<".to_string();},
+        Comparison::EQU => {return "=".to_string();},
+        Comparison::SUP => {return ">".to_string();}
     }
 }
 
@@ -45,26 +53,27 @@ mod tests {
     use super::*;
     #[test]
     fn test_compare_equal() {
-        assert_eq!(compare("2".to_string(), "2".to_string()), 0);
+        assert_eq!(compare("2".to_string(), "2".to_string()), Comparison::EQU);
     }
     #[test]
     fn test_compare_inf() {
-        assert_eq!(compare("3".to_string(), "2".to_string()), -1);
+        assert_eq!(compare("3".to_string(), "2".to_string()), Comparison::SUP);
     }
     #[test]
     fn test_compare_sup() {
-        assert_eq!(compare("2".to_string(), "3".to_string()), 1);
+        assert_eq!(compare("2".to_string(), "3".to_string()), Comparison::INF);
+    }
+
+    #[test]
+    fn test_display_inf() {
+        assert_eq!(display(Comparison::INF), "<".to_string());
     }
     #[test]
     fn test_display_equal() {
-        assert_eq!(display(1), "<".to_string());
-    }
-    #[test]
-    fn test_display_inf() {
-        assert_eq!(display(0), "=".to_string());
+        assert_eq!(display(Comparison::EQU), "=".to_string());
     }
     #[test]
     fn test_display_sup() {
-        assert_eq!(display(-1), ">".to_string());
+        assert_eq!(display(Comparison::SUP), ">".to_string());
     }
 }
