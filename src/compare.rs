@@ -10,14 +10,8 @@ pub enum Comparison {
 }
 
 pub fn compare(version_a: String, version_b: String)-> Comparison{
-    let mut v_a: Vec<i32> = Vec::new();
-    for element in version_a.split('.'){
-        v_a.push(element.parse().unwrap());
-    }
-    let mut v_b: Vec<i32> = Vec::new();
-    for element in version_b.split('.'){
-        v_b.push(element.parse().unwrap());
-    }
+    let mut v_a: Vec<i32> = init_version_numbers(version_a);
+    let mut v_b: Vec<i32> = init_version_numbers(version_b);
 
     normalize_length(&mut v_a, &mut v_b);
 
@@ -29,6 +23,14 @@ pub fn compare(version_a: String, version_b: String)-> Comparison{
         return Comparison::INF;
     }
 
+}
+
+fn init_version_numbers(version: String) -> Vec<i32>{
+    let mut v: Vec<i32> = Vec::new();
+    for element in version.split('.'){
+        v.push(element.parse().unwrap());
+    }
+    return v;
 }
 
 fn normalize_length(_v_a: &mut Vec<i32>, _v_b: &mut Vec<i32>){
