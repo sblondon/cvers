@@ -19,6 +19,20 @@ pub fn compare(version_a: String, version_b: String)-> Comparison{
         v_b.push(element.parse().unwrap());
     }
 
+    if v_a.len() > v_b.len(){
+        let mut difference: usize = v_a.len() - v_b.len();
+        while difference != 0 {
+            v_b.push(0);
+            difference -= 1
+        }
+    } else if v_a.len() < v_b.len(){
+        let mut difference: usize = v_b.len() - v_a.len();
+        while difference != 0 {
+            v_a.push(0);
+            difference -= 1
+        }
+    }
+
     if v_a > v_b {
         return Comparison::SUP;
     } else if v_a == v_b {
@@ -48,6 +62,14 @@ mod tests {
     #[test]
     fn test_compare_equal_with_two_dots() {
         assert_eq!(compare("2.0".to_string(), "2.0".to_string()), Comparison::EQU);
+    }
+    #[test]
+    fn test_compare_equal_with_more_dots_in_first_arg() {
+        assert_eq!(compare("2.0.0".to_string(), "2".to_string()), Comparison::EQU);
+    }
+    #[test]
+    fn test_compare_equal_with_more_dots_in_second_arg() {
+        assert_eq!(compare("2".to_string(), "2.0.0".to_string()), Comparison::EQU);
     }
     #[test]
     fn test_compare_inf() {
