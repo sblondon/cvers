@@ -19,19 +19,7 @@ pub fn compare(version_a: String, version_b: String)-> Comparison{
         v_b.push(element.parse().unwrap());
     }
 
-    if v_a.len() > v_b.len(){
-        let mut difference: usize = v_a.len() - v_b.len();
-        while difference != 0 {
-            v_b.push(0);
-            difference -= 1
-        }
-    } else if v_a.len() < v_b.len(){
-        let mut difference: usize = v_b.len() - v_a.len();
-        while difference != 0 {
-            v_a.push(0);
-            difference -= 1
-        }
-    }
+    normalize_length(&mut v_a, &mut v_b);
 
     if v_a > v_b {
         return Comparison::SUP;
@@ -41,6 +29,22 @@ pub fn compare(version_a: String, version_b: String)-> Comparison{
         return Comparison::INF;
     }
 
+}
+
+fn normalize_length(_v_a: &mut Vec<i32>, _v_b: &mut Vec<i32>){
+    if _v_a.len() > _v_b.len(){
+        let mut difference: usize = _v_a.len() - _v_b.len();
+        while difference != 0 {
+            _v_b.push(0);
+            difference -= 1
+        }
+    } else if _v_a.len() < _v_b.len(){
+        let mut difference: usize = _v_b.len() - _v_a.len();
+        while difference != 0 {
+            _v_a.push(0);
+            difference -= 1
+        }
+    }
 }
 
 pub fn display(comparison: Comparison)-> String{
