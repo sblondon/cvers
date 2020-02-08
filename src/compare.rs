@@ -10,8 +10,8 @@ pub enum Comparison {
 }
 
 pub fn compare(version_a: String, version_b: String)-> Comparison{
-    let mut v_a: Vec<i32> = init_version_numbers(version_a);
-    let mut v_b: Vec<i32> = init_version_numbers(version_b);
+    let mut v_a: Vec<i8> = init_version_numbers(version_a);
+    let mut v_b: Vec<i8> = init_version_numbers(version_b);
 
     normalize_length(&mut v_a, &mut v_b);
 
@@ -25,28 +25,29 @@ pub fn compare(version_a: String, version_b: String)-> Comparison{
 
 }
 
-fn init_version_numbers(version: String) -> Vec<i32>{
-    let mut v: Vec<i32> = Vec::new();
+fn init_version_numbers(version: String) -> Vec<i8>{
+    let mut v: Vec<i8> = Vec::new();
     for element in version.split('.'){
         v.push(element.parse().unwrap());
     }
     return v;
 }
 
-fn normalize_length(_v_a: &mut Vec<i32>, _v_b: &mut Vec<i32>){
-    if _v_a.len() > _v_b.len(){
-        let mut difference: usize = _v_a.len() - _v_b.len();
-        while difference != 0 {
-            _v_b.push(0);
-            difference -= 1
-        }
-    } else if _v_a.len() < _v_b.len(){
-        let mut difference: usize = _v_b.len() - _v_a.len();
-        while difference != 0 {
-            _v_a.push(0);
-            difference -= 1
-        }
+fn normalize_length(mut _v_a: &mut Vec<i8>, mut _v_b: &mut Vec<i8>){
+    if _v_a.len() > _v_b.len() {
+        let difference: i32 = (_v_a.len() - _v_b.len()) as i32;
+        fill_lacking_numbers(&mut _v_b, difference);
+    } else {
+        let difference: i32 = (_v_b.len() - _v_a.len()) as i32;
+        fill_lacking_numbers(&mut _v_a, difference);
     }
+}
+
+fn fill_lacking_numbers(v: &mut Vec<i8>, mut size: i32){
+        while size != 0 {
+            v.push(0);
+            size -= 1
+        }
 }
 
 pub fn display(comparison: Comparison)-> String{
