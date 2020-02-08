@@ -46,7 +46,7 @@ mod tests {
         assert_eq!(compare("2".to_string(), "2".to_string()), Comparison::EQU);
     }
     #[test]
-    fn test_compare_equal_with_two_dot() {
+    fn test_compare_equal_with_two_dots() {
         assert_eq!(compare("2.0".to_string(), "2.0".to_string()), Comparison::EQU);
     }
     #[test]
