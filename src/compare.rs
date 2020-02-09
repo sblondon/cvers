@@ -34,12 +34,11 @@ fn init_version_numbers(version: String) -> Vec<u8>{
 }
 
 fn normalize_length(mut _v_a: &mut Vec<u8>, mut _v_b: &mut Vec<u8>){
-    if _v_a.len() > _v_b.len() {
-        let difference: i32 = (_v_a.len() - _v_b.len()) as i32;
+    let difference: i32 = _v_a.len() as i32 - _v_b.len() as i32;
+    if difference > 0 {
         fill_lacking_numbers(&mut _v_b, difference);
     } else {
-        let difference: i32 = (_v_b.len() - _v_a.len()) as i32;
-        fill_lacking_numbers(&mut _v_a, difference);
+        fill_lacking_numbers(&mut _v_a, difference * -1);
     }
 }
 
