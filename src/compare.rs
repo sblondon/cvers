@@ -9,15 +9,15 @@ pub enum Comparison {
     SUP
 }
 
-pub fn compare(version_a: String, version_b: String)-> Comparison{
-    let mut v_a: Vec<u32> = init_version_numbers(version_a);
-    let mut v_b: Vec<u32> = init_version_numbers(version_b);
+pub fn compare(raw_version_a: String, raw_version_b: String)-> Comparison{
+    let mut version_a: Vec<u32> = init_version_numbers(raw_version_a);
+    let mut version_b: Vec<u32> = init_version_numbers(raw_version_b);
 
-    normalize_length(&mut v_a, &mut v_b);
+    normalize_length(&mut version_a, &mut version_b);
 
-    if v_a > v_b {
+    if version_a > version_b {
         return Comparison::SUP;
-    } else if v_a == v_b {
+    } else if version_a == version_b {
         return Comparison::EQU;
     } else {
         return Comparison::INF;
@@ -33,18 +33,18 @@ fn init_version_numbers(version: String) -> Vec<u32>{
     return v;
 }
 
-fn normalize_length(mut _v_a: &mut Vec<u32>, mut _v_b: &mut Vec<u32>){
-    let difference: i32 = _v_a.len() as i32 - _v_b.len() as i32;
+fn normalize_length(mut _version_a: &mut Vec<u32>, mut _version_b: &mut Vec<u32>){
+    let difference: i32 = _version_a.len() as i32 - _version_b.len() as i32;
     if difference > 0 {
-        fill_lacking_numbers(&mut _v_b, difference);
+        fill_lacking_numbers(&mut _version_b, difference);
     } else {
-        fill_lacking_numbers(&mut _v_a, difference * -1);
+        fill_lacking_numbers(&mut _version_a, difference * -1);
     }
 }
 
-fn fill_lacking_numbers(v: &mut Vec<u32>, mut size: i32){
+fn fill_lacking_numbers(fillable: &mut Vec<u32>, mut size: i32){
         while size != 0 {
-            v.push(0);
+            fillable.push(0);
             size -= 1
         }
 }
