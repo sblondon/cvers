@@ -26,11 +26,21 @@ pub fn compare(raw_version_a: String, raw_version_b: String)-> Comparison{
 }
 
 fn init_version_numbers(version: String) -> Vec<u32>{
-    let mut v: Vec<u32> = Vec::new();
-    for element in version.split('.'){
-        v.push(element.parse().unwrap());
+    let mut version_numbers_only: Vec<u32> = Vec::new();
+    let mut version_and_rc: Vec<String> = Vec::new();
+    for element in version.split('-'){
+        version_and_rc.push(element.to_string());
     }
-    return v;
+    if version_and_rc.len() == 2{
+        for element in version_and_rc[0].split('.'){
+            version_numbers_only.push(element.parse().unwrap());
+        }
+    } else{
+        for element in version.split('.'){
+            version_numbers_only.push(element.parse().unwrap());
+        }
+    }
+    return version_numbers_only;
 }
 
 fn normalize_length(mut _version_a: &mut Vec<u32>, mut _version_b: &mut Vec<u32>){
@@ -80,6 +90,11 @@ mod tests {
     #[test]
     fn test_compare_equal_with_more_dots_in_second_arg() {
         assert_eq!(compare("2".to_string(), "2.0.0".to_string()), Comparison::EQU);
+    }
+    #[test]
+    fn test_compare_equal_with_rc_numbers() {
+        // like linux release versions
+        assert_eq!(compare("5.5-rc7".to_string(), "5.5-rc7".to_string()), Comparison::EQU);
     }
     #[test]
     fn test_compare_inf() {
