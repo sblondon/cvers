@@ -9,15 +9,19 @@ pub enum Comparison {
     SUP
 }
 
+struct Version {
+    main: Vec<u32>,
+}
+
 pub fn compare(raw_version_a: String, raw_version_b: String)-> Comparison{
-    let mut version_a: Vec<u32> = init_version_numbers(raw_version_a);
-    let mut version_b: Vec<u32> = init_version_numbers(raw_version_b);
+    let mut version_a: Version = init_version_numbers(raw_version_a);
+    let mut version_b: Version = init_version_numbers(raw_version_b);
 
-    normalize_length(&mut version_a, &mut version_b);
+    normalize_length(&mut version_a.main, &mut version_b.main);
 
-    if version_a > version_b {
+    if version_a.main > version_b.main {
         return Comparison::SUP;
-    } else if version_a == version_b {
+    } else if version_a.main == version_b.main {
         return Comparison::EQU;
     } else {
         return Comparison::INF;
@@ -25,7 +29,7 @@ pub fn compare(raw_version_a: String, raw_version_b: String)-> Comparison{
 
 }
 
-fn init_version_numbers(version: String) -> Vec<u32>{
+fn init_version_numbers(version: String) -> Version{
     let mut version_numbers_only: Vec<u32> = Vec::new();
     let mut version_and_rc: Vec<String> = Vec::new();
     for element in version.split('-'){
@@ -40,7 +44,9 @@ fn init_version_numbers(version: String) -> Vec<u32>{
             version_numbers_only.push(element.parse().unwrap());
         }
     }
-    return version_numbers_only;
+    return Version{
+        main: version_numbers_only
+    }
 }
 
 fn normalize_length(mut _version_a: &mut Vec<u32>, mut _version_b: &mut Vec<u32>){
