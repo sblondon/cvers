@@ -1,5 +1,5 @@
 use std::fmt::Debug;
-
+use std::cmp::Ordering;
 
 #[derive(PartialEq)]
 #[derive(Debug)]
@@ -9,8 +9,29 @@ pub enum Comparison {
     SUP
 }
 
+#[derive(Eq)]
 struct Version {
     main: Vec<u32>,
+}
+
+
+impl PartialOrd for Version {
+    fn partial_cmp(&self, other: &Version) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+
+impl Ord for Version {
+    fn cmp(&self, other: &Version) -> Ordering {
+        self.main.cmp(&other.main)
+    }
+}
+
+impl PartialEq for Version {
+    fn eq(&self, other: &Version) -> bool {
+        self.main == other.main
+    }
 }
 
 pub fn compare(raw_version_a: String, raw_version_b: String)-> Comparison{
@@ -19,7 +40,7 @@ pub fn compare(raw_version_a: String, raw_version_b: String)-> Comparison{
 
     normalize_length(&mut version_a.main, &mut version_b.main);
 
-    if version_a.main > version_b.main {
+    if version_a > version_b {
         return Comparison::SUP;
     } else if version_a.main == version_b.main {
         return Comparison::EQU;
