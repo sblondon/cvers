@@ -97,15 +97,15 @@ mod tests {
         assert_eq!(compare("5.5-rc7".to_string(), "5.5-rc7".to_string()), Comparison::EQU);
     }
     #[test]
-    fn test_compare_inf() {
+    fn test_compare_sup() {
         assert_eq!(compare("3".to_string(), "2".to_string()), Comparison::SUP);
     }
     #[test]
-    fn test_compare_inf_with_two_dot() {
+    fn test_compare_inf_with_two_dots() {
         assert_eq!(compare("2.0".to_string(), "2.1".to_string()), Comparison::INF);
     }
     #[test]
-    fn test_compare_sup() {
+    fn test_compare_inf() {
         assert_eq!(compare("2".to_string(), "3".to_string()), Comparison::INF);
     }
 
