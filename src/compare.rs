@@ -42,7 +42,7 @@ pub fn compare(raw_version_a: String, raw_version_b: String)-> Comparison{
 
     if version_a > version_b {
         return Comparison::SUP;
-    } else if version_a.main == version_b.main {
+    } else if version_a == version_b {
         return Comparison::EQU;
     } else {
         return Comparison::INF;
