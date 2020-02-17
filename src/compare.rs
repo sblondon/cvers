@@ -21,7 +21,6 @@ impl PartialOrd for Version {
     }
 }
 
-
 impl Ord for Version {
     fn cmp(&self, other: &Version) -> Ordering {
         self.main.cmp(&other.main)
