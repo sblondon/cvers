@@ -12,6 +12,7 @@ pub enum Comparison {
 #[derive(Eq)]
 struct Version {
     main: Vec<u32>,
+    is_rc: bool,
     rc: u8,
 }
 
@@ -28,7 +29,15 @@ impl Ord for Version {
         if main_order != Ordering::Equal{
             return main_order
         } else {
-            return self.rc.cmp(&other.rc)
+            if self.is_rc != other.is_rc {
+                if self.is_rc {
+                    return Ordering::Less
+                } else {
+                    return Ordering::Greater
+                }
+            } else {
+                return self.rc.cmp(&other.rc)
+            }
         }
     }
 }
@@ -58,6 +67,7 @@ pub fn compare(raw_version_a: String, raw_version_b: String)-> Comparison{
 fn init_version_numbers(version: String) -> Version{
     let mut version_numbers_only: Vec<u32> = Vec::new();
     let mut version_and_rc: Vec<String> = Vec::new();
+    let mut is_rc: bool = false;
     let mut rc: u8 = 0;
     for element in version.split('-'){
         version_and_rc.push(element.to_string());
@@ -67,6 +77,7 @@ fn init_version_numbers(version: String) -> Version{
             version_numbers_only.push(element.parse().unwrap());
         }
         rc = version_and_rc[1][2..].parse().unwrap();
+        is_rc = true;
     } else{
         for element in version.split('.'){
             version_numbers_only.push(element.parse().unwrap());
@@ -74,6 +85,7 @@ fn init_version_numbers(version: String) -> Version{
     }
     return Version{
         main: version_numbers_only,
+        is_rc: is_rc,
         rc: rc,
     }
 }
@@ -136,6 +148,11 @@ mod tests {
         assert_eq!(compare("3".to_string(), "2".to_string()), Comparison::SUP);
     }
     #[test]
+    fn test_compare_sup_between_rc_version_and_release_version() {
+        // like linux release versions
+        assert_eq!(compare("5.5".to_string(), "5.5-rc6".to_string()), Comparison::SUP);
+    }
+    #[test]
     fn test_compare_inf_with_two_dots() {
         assert_eq!(compare("2.0".to_string(), "2.1".to_string()), Comparison::INF);
     }
@@ -148,6 +165,12 @@ mod tests {
         // like linux release versions
         assert_eq!(compare("5.5-rc6".to_string(), "5.5-rc7".to_string()), Comparison::INF);
     }
+    #[test]
+    fn test_compare_inf_between_rc_version_and_release_version() {
+        // like linux release versions
+        assert_eq!(compare("5.5-rc6".to_string(), "5.5".to_string()), Comparison::INF);
+    }
+
 
     #[test]
     fn test_display_inf() {
