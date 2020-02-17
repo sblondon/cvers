@@ -12,6 +12,7 @@ pub enum Comparison {
 #[derive(Eq)]
 struct Version {
     main: Vec<u32>,
+    rc: u8,
 }
 
 
@@ -23,13 +24,18 @@ impl PartialOrd for Version {
 
 impl Ord for Version {
     fn cmp(&self, other: &Version) -> Ordering {
-        self.main.cmp(&other.main)
+        let main_order: Ordering = self.main.cmp(&other.main);
+        if main_order != Ordering::Equal{
+            return main_order
+        } else {
+            return self.rc.cmp(&other.rc)
+        }
     }
 }
 
 impl PartialEq for Version {
     fn eq(&self, other: &Version) -> bool {
-        self.main == other.main
+        self.main == other.main && self.rc == other.rc
     }
 }
 
@@ -52,6 +58,7 @@ pub fn compare(raw_version_a: String, raw_version_b: String)-> Comparison{
 fn init_version_numbers(version: String) -> Version{
     let mut version_numbers_only: Vec<u32> = Vec::new();
     let mut version_and_rc: Vec<String> = Vec::new();
+    let mut rc: u8 = 0;
     for element in version.split('-'){
         version_and_rc.push(element.to_string());
     }
@@ -59,13 +66,15 @@ fn init_version_numbers(version: String) -> Version{
         for element in version_and_rc[0].split('.'){
             version_numbers_only.push(element.parse().unwrap());
         }
+        rc = version_and_rc[1][2..].parse().unwrap();
     } else{
         for element in version.split('.'){
             version_numbers_only.push(element.parse().unwrap());
         }
     }
     return Version{
-        main: version_numbers_only
+        main: version_numbers_only,
+        rc: rc,
     }
 }
 
@@ -133,6 +142,11 @@ mod tests {
     #[test]
     fn test_compare_inf() {
         assert_eq!(compare("2".to_string(), "3".to_string()), Comparison::INF);
+    }
+    #[test]
+    fn test_compare_inf_with_rc_numbers() {
+        // like linux release versions
+        assert_eq!(compare("5.5-rc6".to_string(), "5.5-rc7".to_string()), Comparison::INF);
     }
 
     #[test]
