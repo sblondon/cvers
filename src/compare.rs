@@ -1,13 +1,5 @@
-use std::fmt::Debug;
 use std::cmp::Ordering;
 
-#[derive(PartialEq)]
-#[derive(Debug)]
-pub enum Comparison {
-    INF,
-    EQU,
-    SUP
-}
 
 #[derive(Eq)]
 struct Version {
@@ -48,20 +40,13 @@ impl PartialEq for Version {
     }
 }
 
-pub fn compare(raw_version_a: String, raw_version_b: String)-> Comparison{
+pub fn compare(raw_version_a: String, raw_version_b: String)-> Ordering{
     let mut version_a: Version = init_version_numbers(raw_version_a);
     let mut version_b: Version = init_version_numbers(raw_version_b);
 
     normalize_length(&mut version_a.main, &mut version_b.main);
 
-    if version_a > version_b {
-        return Comparison::SUP;
-    } else if version_a == version_b {
-        return Comparison::EQU;
-    } else {
-        return Comparison::INF;
-    }
-
+    version_a.cmp(&version_b)
 }
 
 fn init_version_numbers(version: String) -> Version{
@@ -106,11 +91,11 @@ fn fill_lacking_numbers(fillable: &mut Vec<u32>, mut size: i32){
         }
 }
 
-pub fn display(comparison: Comparison)-> String{
+pub fn display(comparison: Ordering)-> String{
     match comparison {
-        Comparison::INF => {return "<".to_string();},
-        Comparison::EQU => {return "=".to_string();},
-        Comparison::SUP => {return ">".to_string();}
+        Ordering::Less => {return "<".to_string();},
+        Ordering::Equal => {return "=".to_string();},
+        Ordering::Greater => {return ">".to_string();}
     }
 }
 
@@ -120,68 +105,68 @@ mod tests {
     use super::*;
     #[test]
     fn test_compare_compatible_with_tex_version() {
-        assert_eq!(compare("3.14159265".to_string(), "3.14159265".to_string()), Comparison::EQU);
+        assert_eq!(compare("3.14159265".to_string(), "3.14159265".to_string()), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal() {
-        assert_eq!(compare("2".to_string(), "2".to_string()), Comparison::EQU);
+        assert_eq!(compare("2".to_string(), "2".to_string()), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal_with_two_dots() {
-        assert_eq!(compare("2.0".to_string(), "2.0".to_string()), Comparison::EQU);
+        assert_eq!(compare("2.0".to_string(), "2.0".to_string()), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal_with_more_dots_in_first_arg() {
-        assert_eq!(compare("2.0.0".to_string(), "2".to_string()), Comparison::EQU);
+        assert_eq!(compare("2.0.0".to_string(), "2".to_string()), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal_with_more_dots_in_second_arg() {
-        assert_eq!(compare("2".to_string(), "2.0.0".to_string()), Comparison::EQU);
+        assert_eq!(compare("2".to_string(), "2.0.0".to_string()), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal_with_rc_numbers() {
         // like linux release versions
-        assert_eq!(compare("5.5-rc7".to_string(), "5.5-rc7".to_string()), Comparison::EQU);
+        assert_eq!(compare("5.5-rc7".to_string(), "5.5-rc7".to_string()), Ordering::Equal);
     }
     #[test]
     fn test_compare_sup() {
-        assert_eq!(compare("3".to_string(), "2".to_string()), Comparison::SUP);
+        assert_eq!(compare("3".to_string(), "2".to_string()), Ordering::Greater);
     }
     #[test]
     fn test_compare_sup_between_rc_version_and_release_version() {
         // like linux release versions
-        assert_eq!(compare("5.5".to_string(), "5.5-rc6".to_string()), Comparison::SUP);
+        assert_eq!(compare("5.5".to_string(), "5.5-rc6".to_string()), Ordering::Greater);
     }
     #[test]
     fn test_compare_inf_with_two_dots() {
-        assert_eq!(compare("2.0".to_string(), "2.1".to_string()), Comparison::INF);
+        assert_eq!(compare("2.0".to_string(), "2.1".to_string()), Ordering::Less);
     }
     #[test]
     fn test_compare_inf() {
-        assert_eq!(compare("2".to_string(), "3".to_string()), Comparison::INF);
+        assert_eq!(compare("2".to_string(), "3".to_string()), Ordering::Less);
     }
     #[test]
     fn test_compare_inf_with_rc_numbers() {
         // like linux release versions
-        assert_eq!(compare("5.5-rc6".to_string(), "5.5-rc7".to_string()), Comparison::INF);
+        assert_eq!(compare("5.5-rc6".to_string(), "5.5-rc7".to_string()), Ordering::Less);
     }
     #[test]
     fn test_compare_inf_between_rc_version_and_release_version() {
         // like linux release versions
-        assert_eq!(compare("5.5-rc6".to_string(), "5.5".to_string()), Comparison::INF);
+        assert_eq!(compare("5.5-rc6".to_string(), "5.5".to_string()), Ordering::Less);
     }
 
 
     #[test]
     fn test_display_inf() {
-        assert_eq!(display(Comparison::INF), "<".to_string());
+        assert_eq!(display(Ordering::Less), "<".to_string());
     }
     #[test]
     fn test_display_equal() {
-        assert_eq!(display(Comparison::EQU), "=".to_string());
+        assert_eq!(display(Ordering::Equal), "=".to_string());
     }
     #[test]
     fn test_display_sup() {
-        assert_eq!(display(Comparison::SUP), ">".to_string());
+        assert_eq!(display(Ordering::Greater), ">".to_string());
     }
 }
