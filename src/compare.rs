@@ -91,13 +91,6 @@ fn fill_lacking_numbers(fillable: &mut Vec<u32>, mut size: i32){
         }
 }
 
-pub fn display(order: Ordering)-> String{
-    match order {
-        Ordering::Less => {return "<".to_string();},
-        Ordering::Equal => {return "=".to_string();},
-        Ordering::Greater => {return ">".to_string();}
-    }
-}
 
 #[cfg(test)]
 mod tests {
@@ -154,19 +147,5 @@ mod tests {
     fn test_compare_inf_between_rc_version_and_release_version() {
         // like linux release versions
         assert_eq!(compare("5.5-rc6".to_string(), "5.5".to_string()), Ordering::Less);
-    }
-
-
-    #[test]
-    fn test_display_inf() {
-        assert_eq!(display(Ordering::Less), "<".to_string());
-    }
-    #[test]
-    fn test_display_equal() {
-        assert_eq!(display(Ordering::Equal), "=".to_string());
-    }
-    #[test]
-    fn test_display_sup() {
-        assert_eq!(display(Ordering::Greater), ">".to_string());
     }
 }

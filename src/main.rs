@@ -2,7 +2,7 @@ use std::env;
 use std::process;
 
 mod compare;
-
+mod display;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -13,7 +13,7 @@ fn main() {
 
     let version_a = &args[1];
     let version_b = &args[2];
-    println!("{}", compare::display(
+    println!("{}", display::display(
             compare::compare(version_a.to_string(), version_b.to_string())
         )
     );
