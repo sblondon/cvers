@@ -17,20 +17,34 @@ impl PartialOrd for Version {
 
 impl Ord for Version {
     fn cmp(&self, other: &Version) -> Ordering {
-        let main_order: Ordering = self.main.cmp(&other.main);
+        let main_order: Ordering = self.cmp_main(other);
         if main_order != Ordering::Equal{
             return main_order
         } else {
             if self.is_rc != other.is_rc {
-                if self.is_rc {
-                    return Ordering::Less
-                } else {
-                    return Ordering::Greater
-                }
+                return self.cmp_is_rc(other);
             } else {
-                return self.rc.cmp(&other.rc)
+                return self.cmp_rc(other);
             }
         }
+    }
+}
+
+impl Version {
+    fn cmp_main(&self, other: &Version) -> Ordering {
+        return self.main.cmp(&other.main)
+    }
+
+    fn cmp_is_rc(&self, other: &Version) -> Ordering {
+        if self.is_rc {
+            return Ordering::Less
+        } else {
+            return Ordering::Greater
+        }
+    }
+
+    fn cmp_rc(&self, other: &Version) -> Ordering {
+        return self.rc.cmp(&other.rc)
     }
 }
 
