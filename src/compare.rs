@@ -23,12 +23,12 @@ impl Ord for Version {
             return main_order
         } else {
             if self.is_rc != other.is_rc {
-                return self.cmp_is_rc(other);
+                return self.cmp_is_rc(other)
             } else {
                 if self.is_rc {
-                    return self.cmp_rc(other);
+                    return self.cmp_rc(other)
                 } else {
-                    return self.cmp_dev_step(other);
+                    return self.cmp_dev_step(other)
                 }
             }
         }
