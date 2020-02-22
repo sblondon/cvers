@@ -5,7 +5,6 @@ use std::cmp::Ordering;
 struct Version {
     main: Vec<u32>,
     dev_step: String,
-    is_rc: bool,
     rc: u8,
 }
 
@@ -22,10 +21,10 @@ impl Ord for Version {
         if main_order != Ordering::Equal{
             return main_order
         } else {
-            if self.is_rc != other.is_rc {
+            if self.is_rc() != other.is_rc() {
                 return self.cmp_is_rc(other)
             } else {
-                if self.is_rc {
+                if self.is_rc() {
                     return self.cmp_rc(other)
                 } else {
                     return self.cmp_dev_step(other)
@@ -40,8 +39,11 @@ impl Version {
         return self.main.cmp(&other.main)
     }
 
+    fn is_rc(&self) -> bool {
+        return self.dev_step == "rc".to_string()
+    }
     fn cmp_is_rc(&self, other: &Version) -> Ordering {
-        if self.is_rc {
+        if self.is_rc() {
             return Ordering::Less
         } else {
             return Ordering::Greater
@@ -76,7 +78,6 @@ fn init_version_numbers(version: String) -> Version{
     let mut version_numbers_only: Vec<u32> = Vec::new();
     let mut version_and_rc: Vec<String> = Vec::new();
     let mut dev_step: String = "".to_string();
-    let mut is_rc: bool = false;
     let mut rc: u8 = 0;
     for element in version.split('-'){
         version_and_rc.push(element.to_string());
@@ -88,10 +89,8 @@ fn init_version_numbers(version: String) -> Version{
         if version_and_rc[1][..2] == "rc".to_string(){
             dev_step = "rc".to_string();
             rc = version_and_rc[1][2..].parse().unwrap();
-            is_rc = true;
         } else {
             dev_step = version_and_rc[1].to_string();
-            is_rc = false;
         }
     } else{
         for element in version.split('.'){
@@ -101,7 +100,6 @@ fn init_version_numbers(version: String) -> Version{
     return Version{
         main: version_numbers_only,
         dev_step: dev_step,
-        is_rc: is_rc,
         rc: rc,
     }
 }
