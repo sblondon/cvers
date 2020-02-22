@@ -75,8 +75,12 @@ fn init_version_numbers(version: String) -> Version{
         for element in version_and_rc[0].split('.'){
             version_numbers_only.push(element.parse().unwrap());
         }
-        rc = version_and_rc[1][2..].parse().unwrap();
-        is_rc = true;
+        if version_and_rc[1][..2] == "rc".to_string(){
+            rc = version_and_rc[1][2..].parse().unwrap();
+            is_rc = true;
+        } else {
+            is_rc = false;
+        }
     } else{
         for element in version.split('.'){
             version_numbers_only.push(element.parse().unwrap());
@@ -129,6 +133,16 @@ mod tests {
     #[test]
     fn test_compare_equal_with_more_dots_in_second_arg() {
         assert_eq!(compare("2".to_string(), "2.0.0".to_string()), Ordering::Equal);
+    }
+    #[test]
+    fn test_compare_equal_with_alpha() {
+        // like linux release versions
+        assert_eq!(compare("1.0-alpha".to_string(), "1.0-alpha".to_string()), Ordering::Equal);
+    }
+    #[test]
+    fn test_compare_equal_with_beta() {
+        // like linux release versions
+        assert_eq!(compare("1.0-beta".to_string(), "1.0-beta".to_string()), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal_with_rc_numbers() {
