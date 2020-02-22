@@ -4,6 +4,7 @@ use std::cmp::Ordering;
 #[derive(Eq)]
 struct Version {
     main: Vec<u32>,
+    dev_step: String,
     is_rc: bool,
     rc: u8,
 }
@@ -24,7 +25,11 @@ impl Ord for Version {
             if self.is_rc != other.is_rc {
                 return self.cmp_is_rc(other);
             } else {
-                return self.cmp_rc(other);
+                if self.is_rc {
+                    return self.cmp_rc(other);
+                } else {
+                    return self.cmp_dev_step(other);
+                }
             }
         }
     }
@@ -46,6 +51,10 @@ impl Version {
     fn cmp_rc(&self, other: &Version) -> Ordering {
         return self.rc.cmp(&other.rc)
     }
+
+    fn cmp_dev_step(&self, other: &Version) -> Ordering {
+        return self.dev_step.cmp(&other.dev_step)
+    }
 }
 
 impl PartialEq for Version {
@@ -66,6 +75,7 @@ pub fn compare(raw_version_a: String, raw_version_b: String)-> Ordering{
 fn init_version_numbers(version: String) -> Version{
     let mut version_numbers_only: Vec<u32> = Vec::new();
     let mut version_and_rc: Vec<String> = Vec::new();
+    let mut dev_step: String = "".to_string();
     let mut is_rc: bool = false;
     let mut rc: u8 = 0;
     for element in version.split('-'){
@@ -76,9 +86,11 @@ fn init_version_numbers(version: String) -> Version{
             version_numbers_only.push(element.parse().unwrap());
         }
         if version_and_rc[1][..2] == "rc".to_string(){
+            dev_step = "rc".to_string();
             rc = version_and_rc[1][2..].parse().unwrap();
             is_rc = true;
         } else {
+            dev_step = version_and_rc[1].to_string();
             is_rc = false;
         }
     } else{
@@ -88,6 +100,7 @@ fn init_version_numbers(version: String) -> Version{
     }
     return Version{
         main: version_numbers_only,
+        dev_step: dev_step,
         is_rc: is_rc,
         rc: rc,
     }
@@ -141,7 +154,6 @@ mod tests {
     }
     #[test]
     fn test_compare_equal_with_beta() {
-        // like linux release versions
         assert_eq!(compare("1.0-beta".to_string(), "1.0-beta".to_string()), Ordering::Equal);
     }
     #[test]
@@ -176,4 +188,9 @@ mod tests {
         // like linux release versions
         assert_eq!(compare("5.5-rc6".to_string(), "5.5".to_string()), Ordering::Less);
     }
+    #[test]
+    fn test_compare_inf_between_alpha_and_beta_versions() {
+        assert_eq!(compare("5.5-alpha".to_string(), "5.5-beta".to_string()), Ordering::Less);
+    }
+
 }
