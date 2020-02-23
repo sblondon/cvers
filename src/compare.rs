@@ -23,15 +23,17 @@ impl Ord for Version {
             None => {}
         }
 
-        if self.cmp_dev_step(other) == Ordering::Equal{
+        let dev_step_order: Option<Ordering> = self.cmp_dev_step(other);
+        match dev_step_order {
+            Some(x) => return x,
+            None => {}
+        }
+
             if self.is_rc() {
                 return self.cmp_rc(other)
             } else {
                 return Ordering::Equal
             }
-        } else {
-            return self.cmp_dev_step(other)
-        }
     }
 }
 
@@ -53,17 +55,21 @@ impl Version {
         return self.rc.cmp(&other.rc)
     }
 
-    fn cmp_dev_step(&self, other: &Version) -> Ordering {
+    fn cmp_dev_step(&self, other: &Version) -> Option<Ordering> {
         if self.dev_step.len() > 0 && other.dev_step.len() > 0 {
-            return self.dev_step.cmp(&other.dev_step)
+            if self.is_rc() && other.is_rc(){
+                return None
+            } else {
+                return Some(self.dev_step.cmp(&other.dev_step))
+            }
         } else {
             if self.dev_step.len() == 0 && other.dev_step.len() == 0 {
-                return Ordering::Equal
+                return None
             }
             if self.dev_step.len() == 0 {
-                return Ordering::Greater
+                return Some(Ordering::Greater)
             } else {
-                return Ordering::Less
+                return Some(Ordering::Less)
             }
         }
     }
