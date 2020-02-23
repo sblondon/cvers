@@ -29,11 +29,13 @@ impl Ord for Version {
             None => {}
         }
 
-            if self.is_rc() {
-                return self.cmp_rc(other)
-            } else {
-                return Ordering::Equal
-            }
+        let rc_order: Option<Ordering> = self.cmp_rc(other);
+        match rc_order {
+            Some(x) => return x,
+            None => {}
+        }
+
+        return Ordering::Equal
     }
 }
 
@@ -51,8 +53,12 @@ impl Version {
         return self.dev_step == "rc".to_string()
     }
 
-    fn cmp_rc(&self, other: &Version) -> Ordering {
-        return self.rc.cmp(&other.rc)
+    fn cmp_rc(&self, other: &Version) -> Option<Ordering> {
+        if self.is_rc() {
+            return Some(self.rc.cmp(&other.rc))
+        } else {
+            return None
+        }
     }
 
     fn cmp_dev_step(&self, other: &Version) -> Option<Ordering> {
