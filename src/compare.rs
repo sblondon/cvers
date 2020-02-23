@@ -23,14 +23,14 @@ impl Ord for Version {
             None => {}
         }
 
-        if self.is_rc() != other.is_rc() {
-            return self.cmp_is_rc(other)
-        } else {
+        if self.cmp_dev_step(other) == Ordering::Equal{
             if self.is_rc() {
                 return self.cmp_rc(other)
             } else {
-                return self.cmp_dev_step(other)
+                return Ordering::Equal
             }
+        } else {
+            return self.cmp_dev_step(other)
         }
     }
 }
@@ -48,20 +48,24 @@ impl Version {
     fn is_rc(&self) -> bool {
         return self.dev_step == "rc".to_string()
     }
-    fn cmp_is_rc(&self, other: &Version) -> Ordering {
-        if self.is_rc() {
-            return Ordering::Less
-        } else {
-            return Ordering::Greater
-        }
-    }
 
     fn cmp_rc(&self, other: &Version) -> Ordering {
         return self.rc.cmp(&other.rc)
     }
 
     fn cmp_dev_step(&self, other: &Version) -> Ordering {
-        return self.dev_step.cmp(&other.dev_step)
+        if self.dev_step.len() > 0 && other.dev_step.len() > 0 {
+            return self.dev_step.cmp(&other.dev_step)
+        } else {
+            if self.dev_step.len() == 0 && other.dev_step.len() == 0 {
+                return Ordering::Equal
+            }
+            if self.dev_step.len() == 0 {
+                return Ordering::Greater
+            } else {
+                return Ordering::Less
+            }
+        }
     }
 }
 
@@ -195,6 +199,10 @@ mod tests {
     #[test]
     fn test_compare_inf_between_alpha_and_beta_versions() {
         assert_eq!(compare("5.5-alpha".to_string(), "5.5-beta".to_string()), Ordering::Less);
+    }
+    #[test]
+    fn test_compare_inf_between_beta_and_rc_versions() {
+        assert_eq!(compare("1.0-beta".to_string(), "1.0-rc1".to_string()), Ordering::Less);
     }
 
 }
