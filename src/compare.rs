@@ -62,21 +62,20 @@ impl Version {
     }
 
     fn cmp_dev_step(&self, other: &Version) -> Option<Ordering> {
+        if self.dev_step.len() == 0 && other.dev_step.len() == 0 {
+            return None
+        }
         if self.dev_step.len() > 0 && other.dev_step.len() > 0 {
             if self.is_rc() && other.is_rc(){
                 return None
             } else {
                 return Some(self.dev_step.cmp(&other.dev_step))
             }
+        }
+        if self.dev_step.len() == 0 {
+            return Some(Ordering::Greater)
         } else {
-            if self.dev_step.len() == 0 && other.dev_step.len() == 0 {
-                return None
-            }
-            if self.dev_step.len() == 0 {
-                return Some(Ordering::Greater)
-            } else {
-                return Some(Ordering::Less)
-            }
+            return Some(Ordering::Less)
         }
     }
 }
