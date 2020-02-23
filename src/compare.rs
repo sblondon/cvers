@@ -4,7 +4,7 @@ use std::cmp::Ordering;
 #[derive(Eq)]
 struct Version {
     main: Vec<u32>,
-    dev_step: String,
+    pre_release: String,
     rc: u8,
 }
 
@@ -23,8 +23,8 @@ impl Ord for Version {
             None => {}
         }
 
-        let dev_step_order: Option<Ordering> = self.cmp_dev_step(other);
-        match dev_step_order {
+        let pre_release_order: Option<Ordering> = self.cmp_pre_release(other);
+        match pre_release_order {
             Some(x) => return x,
             None => {}
         }
@@ -50,7 +50,7 @@ impl Version {
     }
 
     fn is_rc(&self) -> bool {
-        return self.dev_step == "rc".to_string()
+        return self.pre_release == "rc".to_string()
     }
 
     fn cmp_rc(&self, other: &Version) -> Option<Ordering> {
@@ -61,18 +61,18 @@ impl Version {
         }
     }
 
-    fn cmp_dev_step(&self, other: &Version) -> Option<Ordering> {
-        if self.dev_step.len() == 0 && other.dev_step.len() == 0 {
+    fn cmp_pre_release(&self, other: &Version) -> Option<Ordering> {
+        if self.pre_release.len() == 0 && other.pre_release.len() == 0 {
             return None
         }
-        if self.dev_step.len() > 0 && other.dev_step.len() > 0 {
+        if self.pre_release.len() > 0 && other.pre_release.len() > 0 {
             if self.is_rc() && other.is_rc(){
                 return None
             } else {
-                return Some(self.dev_step.cmp(&other.dev_step))
+                return Some(self.pre_release.cmp(&other.pre_release))
             }
         }
-        if self.dev_step.len() == 0 {
+        if self.pre_release.len() == 0 {
             return Some(Ordering::Greater)
         } else {
             return Some(Ordering::Less)
@@ -98,7 +98,7 @@ pub fn compare(raw_version_a: String, raw_version_b: String)-> Ordering{
 fn init_version_numbers(version: String) -> Version{
     let mut version_numbers_only: Vec<u32> = Vec::new();
     let mut version_and_rc: Vec<String> = Vec::new();
-    let mut dev_step: String = "".to_string();
+    let mut pre_release: String = "".to_string();
     let mut rc: u8 = 0;
     for element in version.split('-'){
         version_and_rc.push(element.to_string());
@@ -108,10 +108,10 @@ fn init_version_numbers(version: String) -> Version{
             version_numbers_only.push(element.parse().unwrap());
         }
         if version_and_rc[1][..2] == "rc".to_string(){
-            dev_step = "rc".to_string();
+            pre_release = "rc".to_string();
             rc = version_and_rc[1][2..].parse().unwrap();
         } else {
-            dev_step = version_and_rc[1].to_string();
+            pre_release = version_and_rc[1].to_string();
         }
     } else{
         for element in version.split('.'){
@@ -120,7 +120,7 @@ fn init_version_numbers(version: String) -> Version{
     }
     return Version{
         main: version_numbers_only,
-        dev_step: dev_step,
+        pre_release: pre_release,
         rc: rc,
     }
 }
