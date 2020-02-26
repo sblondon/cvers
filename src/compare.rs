@@ -96,11 +96,17 @@ pub fn compare(raw_version_a: String, raw_version_b: String)-> Ordering{
 }
 
 fn init_version_numbers(version: String) -> Version{
+    let mut version_without_epoch: String;
     let mut version_numbers_only: Vec<u32> = Vec::new();
     let mut version_and_rc: Vec<String> = Vec::new();
     let mut pre_release: String = "".to_string();
     let mut rc: u8 = 0;
-    for element in version.split('-'){
+    if version.find(':') != None {
+        version_without_epoch = version.split(":").collect()
+    } else {
+        version_without_epoch = version;
+    }
+    for element in version_without_epoch.split('-'){
         version_and_rc.push(element.to_string());
     }
     if version_and_rc.len() == 2{
@@ -114,7 +120,7 @@ fn init_version_numbers(version: String) -> Version{
             pre_release = version_and_rc[1].to_string();
         }
     } else{
-        for element in version.split('.'){
+        for element in version_without_epoch.split('.'){
             version_numbers_only.push(element.parse().unwrap());
         }
     }
@@ -179,6 +185,10 @@ mod tests {
     fn test_compare_equal_with_rc_numbers() {
         // like linux release versions
         assert_eq!(compare("5.5-rc7".to_string(), "5.5-rc7".to_string()), Ordering::Equal);
+    }
+    #[test]
+    fn test_compare_equal_with_debian_epoch() {
+        assert_eq!(compare("1:1.2.3".to_string(), "1:1.2.3".to_string()), Ordering::Equal);
     }
     #[test]
     fn test_compare_sup() {
