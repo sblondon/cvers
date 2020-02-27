@@ -174,7 +174,6 @@ mod tests {
     }
     #[test]
     fn test_compare_equal_with_alpha() {
-        // like linux release versions
         assert_eq!(compare("1.0-alpha".to_string(), "1.0-alpha".to_string()), Ordering::Equal);
     }
     #[test]
