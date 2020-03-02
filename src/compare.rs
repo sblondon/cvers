@@ -111,19 +111,19 @@ pub fn compare(raw_version_a: String, raw_version_b: String)-> Ordering{
     version_a.cmp(&version_b)
 }
 
-fn init_version_numbers(version: String) -> Version{
+fn init_version_numbers(raw_version: String) -> Version{
     let mut version_without_epoch: String;
     let mut version_numbers_only: Vec<u32> = Vec::new();
     let mut version_and_rc: Vec<String> = Vec::new();
     let mut pre_release: String = "".to_string();
     let mut epoch: u8 = 0;
     let mut rc: u8 = 0;
-    if version.find(':') != None {
-        let splitted_version: Vec<_> = version.split(':').collect();
+    if raw_version.find(':') != None {
+        let splitted_version: Vec<_> = raw_version.split(':').collect();
         epoch = splitted_version[0].parse().unwrap();
         version_without_epoch = splitted_version[1].to_string();
     } else {
-        version_without_epoch = version;
+        version_without_epoch = raw_version;
     }
     for element in version_without_epoch.split('-'){
         version_and_rc.push(element.to_string());
