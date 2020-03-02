@@ -3,6 +3,7 @@ use std::cmp::Ordering;
 
 #[derive(Eq)]
 struct Version {
+    epoch: u8,
     main: Vec<u32>,
     pre_release: String,
     rc: u8,
@@ -17,6 +18,12 @@ impl PartialOrd for Version {
 
 impl Ord for Version {
     fn cmp(&self, other: &Version) -> Ordering {
+        let epoch_order: Option<Ordering> = self.cmp_epoch(other);
+        match epoch_order {
+            Some(x) => return x,
+            None => {}
+        }
+
         let main_order: Option<Ordering> = self.cmp_main(other);
         match main_order {
             Some(x) => return x,
@@ -40,7 +47,16 @@ impl Ord for Version {
 }
 
 impl Version {
-    fn cmp_main(&self, other: &Version) -> Option<Ordering> {
+    fn cmp_epoch(&self, other: &Version) -> Option<Ordering> {
+        let order: Ordering = self.epoch.cmp(&other.epoch);
+        if order == Ordering::Equal{
+            return None
+        } else {
+            return Some(order)
+        }
+    }
+
+   fn cmp_main(&self, other: &Version) -> Option<Ordering> {
         let order: Ordering = self.main.cmp(&other.main);
         if order == Ordering::Equal{
             return None
@@ -100,9 +116,12 @@ fn init_version_numbers(version: String) -> Version{
     let mut version_numbers_only: Vec<u32> = Vec::new();
     let mut version_and_rc: Vec<String> = Vec::new();
     let mut pre_release: String = "".to_string();
+    let mut epoch: u8 = 0;
     let mut rc: u8 = 0;
     if version.find(':') != None {
-        version_without_epoch = version.split(":").collect()
+        let splitted_version: Vec<_> = version.split(':').collect();
+        epoch = splitted_version[0].parse().unwrap();
+        version_without_epoch = splitted_version[1].to_string();
     } else {
         version_without_epoch = version;
     }
@@ -125,6 +144,7 @@ fn init_version_numbers(version: String) -> Version{
         }
     }
     return Version{
+        epoch: epoch,
         main: version_numbers_only,
         pre_release: pre_release,
         rc: rc,
@@ -223,6 +243,14 @@ mod tests {
     #[test]
     fn test_compare_inf_between_beta_and_rc_versions() {
         assert_eq!(compare("1.0-beta".to_string(), "1.0-rc1".to_string()), Ordering::Less);
+    }
+    #[test]
+    fn test_compare_between_debian_epoch() {
+        assert_eq!(compare("1:10".to_string(), "2:2".to_string()), Ordering::Less);
+    }
+    #[test]
+    fn test_compare_between_epoch_and_no_epoch() {
+        assert_eq!(compare("1.2".to_string(), "1:0.1".to_string()), Ordering::Less);
     }
 
 }
