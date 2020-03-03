@@ -14,7 +14,7 @@ fn main() {
     let version_a = &args[1];
     let version_b = &args[2];
     println!("{}", display::display(
-            compare::compare(version_a.to_string(), version_b.to_string())
+            compare::compare(version_a, version_b)
         )
     );
 }
