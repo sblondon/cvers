@@ -210,46 +210,62 @@ mod tests {
         assert_eq!(compare(&"1:1.2.3", &"1:1.2.3"), Ordering::Equal);
     }
     #[test]
-    fn test_compare_basic() {
+    fn test_not_equal_basic() {
         const MAX: &str = "3";
         const MIN: &str = "2";
         assert_eq!(compare(MAX, MIN), Ordering::Greater);
         assert_eq!(compare(MIN, MAX), Ordering::Less);
     }
     #[test]
-    fn test_compare_sup_between_rc_version_and_release_version() {
+    fn test_not_equal_between_rc_version_and_release_version() {
         // like linux release versions
-        assert_eq!(compare(&"5.5", &"5.5-rc6"), Ordering::Greater);
+        const MAX: &str = "5.5";
+        const MIN: &str = "5.5-rc6";
+        assert_eq!(compare(MAX, MIN), Ordering::Greater);
+        assert_eq!(compare(MIN, MAX), Ordering::Less);
     }
     #[test]
-    fn test_compare_inf_with_two_dots() {
-        assert_eq!(compare(&"2.0", &"2.1"), Ordering::Less);
+    fn test_not_equal_with_two_dots() {
+        const MAX: &str = "2.1";
+        const MIN: &str = "2.0";
+        assert_eq!(compare(MAX, MIN), Ordering::Greater);
+        assert_eq!(compare(MIN, MAX), Ordering::Less);
     }
     #[test]
-    fn test_compare_inf_with_rc_numbers() {
+    fn test_not_equal_with_rc_numbers() {
         // like linux release versions
-        assert_eq!(compare(&"5.5-rc6", &"5.5-rc7"), Ordering::Less);
+        const MAX: &str = "5.5-rc7";
+        const MIN: &str = "5.5-rc6";
+        assert_eq!(compare(MAX, MIN), Ordering::Greater);
+        assert_eq!(compare(MIN, MAX), Ordering::Less);
     }
     #[test]
-    fn test_compare_inf_between_rc_version_and_release_version() {
-        // like linux release versions
-        assert_eq!(compare(&"5.5-rc6", &"5.5"), Ordering::Less);
+    fn test_not_equal_between_alpha_and_beta_versions() {
+        const MAX: &str = "5.5-beta";
+        const MIN: &str = "5.5-alpha";
+        assert_eq!(compare(MAX, MIN), Ordering::Greater);
+        assert_eq!(compare(MIN, MAX), Ordering::Less);
     }
     #[test]
-    fn test_compare_inf_between_alpha_and_beta_versions() {
-        assert_eq!(compare(&"5.5-alpha", &"5.5-beta"), Ordering::Less);
+    fn test_not_equal_between_beta_and_rc_versions() {
+        const MAX: &str = "1.0-rc1";
+        const MIN: &str = "1.0-beta";
+        assert_eq!(compare(MAX, MIN), Ordering::Greater);
+        assert_eq!(compare(MIN, MAX), Ordering::Less);
     }
     #[test]
-    fn test_compare_inf_between_beta_and_rc_versions() {
-        assert_eq!(compare(&"1.0-beta", &"1.0-rc1"), Ordering::Less);
+    fn test_not_equal_between_debian_epoch() {
+        const MAX: &str = "2:2";
+        const MIN: &str = "1:10";
+        assert_eq!(compare(MAX, MIN), Ordering::Greater);
+        assert_eq!(compare(MIN, MAX), Ordering::Less);
     }
     #[test]
-    fn test_compare_between_debian_epoch() {
-        assert_eq!(compare(&"1:10", &"2:2"), Ordering::Less);
-    }
-    #[test]
-    fn test_compare_between_epoch_and_no_epoch() {
-        assert_eq!(compare(&"1.2", &"1:0.1"), Ordering::Less);
+    fn test_not_equal_between_epoch_and_no_epoch() {
+        const MAX: &str = "1:0.1";
+        const MIN: &str = "1.2";
+        assert_eq!(compare(MAX, MIN), Ordering::Greater);
+        assert_eq!(compare(MIN, MAX), Ordering::Less);
     }
 
 }
