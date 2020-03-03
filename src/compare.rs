@@ -210,8 +210,11 @@ mod tests {
         assert_eq!(compare(&"1:1.2.3", &"1:1.2.3"), Ordering::Equal);
     }
     #[test]
-    fn test_compare_sup() {
-        assert_eq!(compare(&"3", &"2"), Ordering::Greater);
+    fn test_compare_basic() {
+        const A: &str = "3";
+        const B: &str = "2";
+        assert_eq!(compare(A, B), Ordering::Greater);
+        assert_eq!(compare(B, A), Ordering::Less);
     }
     #[test]
     fn test_compare_sup_between_rc_version_and_release_version() {
@@ -221,10 +224,6 @@ mod tests {
     #[test]
     fn test_compare_inf_with_two_dots() {
         assert_eq!(compare(&"2.0", &"2.1"), Ordering::Less);
-    }
-    #[test]
-    fn test_compare_inf() {
-        assert_eq!(compare(&"2", &"3"), Ordering::Less);
     }
     #[test]
     fn test_compare_inf_with_rc_numbers() {
