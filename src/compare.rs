@@ -211,10 +211,10 @@ mod tests {
     }
     #[test]
     fn test_compare_basic() {
-        const A: &str = "3";
-        const B: &str = "2";
-        assert_eq!(compare(A, B), Ordering::Greater);
-        assert_eq!(compare(B, A), Ordering::Less);
+        const MAX: &str = "3";
+        const MIN: &str = "2";
+        assert_eq!(compare(MAX, MIN), Ordering::Greater);
+        assert_eq!(compare(MIN, MAX), Ordering::Less);
     }
     #[test]
     fn test_compare_sup_between_rc_version_and_release_version() {
