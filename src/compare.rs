@@ -112,7 +112,7 @@ pub fn compare(raw_version_a: String, raw_version_b: String)-> Ordering{
 }
 
 fn init_version_numbers(raw_version: String) -> Version{
-    let mut version_without_epoch: String;
+    let version_without_epoch: String;
     let mut version_numbers_only: Vec<u32> = Vec::new();
     let mut version_and_rc: Vec<String> = Vec::new();
     let mut pre_release: String = "".to_string();
