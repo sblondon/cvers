@@ -102,9 +102,9 @@ impl PartialEq for Version {
     }
 }
 
-pub fn compare(raw_version_a: String, raw_version_b: String)-> Ordering{
-    let mut version_a: Version = init_version_numbers(raw_version_a);
-    let mut version_b: Version = init_version_numbers(raw_version_b);
+pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
+    let mut version_a: Version = init_version_numbers(raw_version_a.to_string());
+    let mut version_b: Version = init_version_numbers(raw_version_b.to_string());
 
     normalize_length(&mut version_a.main, &mut version_b.main);
 
@@ -174,83 +174,83 @@ mod tests {
     use super::*;
     #[test]
     fn test_compare_compatible_with_tex_version() {
-        assert_eq!(compare("3.14159265".to_string(), "3.14159265".to_string()), Ordering::Equal);
+        assert_eq!(compare(&"3.14159265", &"3.14159265"), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal() {
-        assert_eq!(compare("2".to_string(), "2".to_string()), Ordering::Equal);
+        assert_eq!(compare(&"2", &"2"), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal_with_two_dots() {
-        assert_eq!(compare("2.0".to_string(), "2.0".to_string()), Ordering::Equal);
+        assert_eq!(compare(&"2.0", &"2.0"), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal_with_more_dots_in_first_arg() {
-        assert_eq!(compare("2.0.0".to_string(), "2".to_string()), Ordering::Equal);
+        assert_eq!(compare(&"2.0.0", &"2"), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal_with_more_dots_in_second_arg() {
-        assert_eq!(compare("2".to_string(), "2.0.0".to_string()), Ordering::Equal);
+        assert_eq!(compare(&"2", &"2.0.0"), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal_with_alpha() {
-        assert_eq!(compare("1.0-alpha".to_string(), "1.0-alpha".to_string()), Ordering::Equal);
+        assert_eq!(compare(&"1.0-alpha", &"1.0-alpha"), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal_with_beta() {
-        assert_eq!(compare("1.0-beta".to_string(), "1.0-beta".to_string()), Ordering::Equal);
+        assert_eq!(compare(&"1.0-beta", &"1.0-beta"), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal_with_rc_numbers() {
         // like linux release versions
-        assert_eq!(compare("5.5-rc7".to_string(), "5.5-rc7".to_string()), Ordering::Equal);
+        assert_eq!(compare(&"5.5-rc7", &"5.5-rc7"), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal_with_debian_epoch() {
-        assert_eq!(compare("1:1.2.3".to_string(), "1:1.2.3".to_string()), Ordering::Equal);
+        assert_eq!(compare(&"1:1.2.3", &"1:1.2.3"), Ordering::Equal);
     }
     #[test]
     fn test_compare_sup() {
-        assert_eq!(compare("3".to_string(), "2".to_string()), Ordering::Greater);
+        assert_eq!(compare(&"3", &"2"), Ordering::Greater);
     }
     #[test]
     fn test_compare_sup_between_rc_version_and_release_version() {
         // like linux release versions
-        assert_eq!(compare("5.5".to_string(), "5.5-rc6".to_string()), Ordering::Greater);
+        assert_eq!(compare(&"5.5", &"5.5-rc6"), Ordering::Greater);
     }
     #[test]
     fn test_compare_inf_with_two_dots() {
-        assert_eq!(compare("2.0".to_string(), "2.1".to_string()), Ordering::Less);
+        assert_eq!(compare(&"2.0", &"2.1"), Ordering::Less);
     }
     #[test]
     fn test_compare_inf() {
-        assert_eq!(compare("2".to_string(), "3".to_string()), Ordering::Less);
+        assert_eq!(compare(&"2", &"3"), Ordering::Less);
     }
     #[test]
     fn test_compare_inf_with_rc_numbers() {
         // like linux release versions
-        assert_eq!(compare("5.5-rc6".to_string(), "5.5-rc7".to_string()), Ordering::Less);
+        assert_eq!(compare(&"5.5-rc6", &"5.5-rc7"), Ordering::Less);
     }
     #[test]
     fn test_compare_inf_between_rc_version_and_release_version() {
         // like linux release versions
-        assert_eq!(compare("5.5-rc6".to_string(), "5.5".to_string()), Ordering::Less);
+        assert_eq!(compare(&"5.5-rc6", &"5.5"), Ordering::Less);
     }
     #[test]
     fn test_compare_inf_between_alpha_and_beta_versions() {
-        assert_eq!(compare("5.5-alpha".to_string(), "5.5-beta".to_string()), Ordering::Less);
+        assert_eq!(compare(&"5.5-alpha", &"5.5-beta"), Ordering::Less);
     }
     #[test]
     fn test_compare_inf_between_beta_and_rc_versions() {
-        assert_eq!(compare("1.0-beta".to_string(), "1.0-rc1".to_string()), Ordering::Less);
+        assert_eq!(compare(&"1.0-beta", &"1.0-rc1"), Ordering::Less);
     }
     #[test]
     fn test_compare_between_debian_epoch() {
-        assert_eq!(compare("1:10".to_string(), "2:2".to_string()), Ordering::Less);
+        assert_eq!(compare(&"1:10", &"2:2"), Ordering::Less);
     }
     #[test]
     fn test_compare_between_epoch_and_no_epoch() {
-        assert_eq!(compare("1.2".to_string(), "1:0.1".to_string()), Ordering::Less);
+        assert_eq!(compare(&"1.2", &"1:0.1"), Ordering::Less);
     }
 
 }
