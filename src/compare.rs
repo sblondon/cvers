@@ -6,7 +6,7 @@ struct Version {
     epoch: u8,
     main: Vec<u32>,
     pre_release: String,
-    rc: u8,
+    pre_release_number: u8,
 }
 
 
@@ -36,8 +36,8 @@ impl Ord for Version {
             None => {}
         }
 
-        let rc_order: Option<Ordering> = self.cmp_rc(other);
-        match rc_order {
+        let pre_release_number_order: Option<Ordering> = self.cmp_pre_release_number(other);
+        match pre_release_number_order {
             Some(x) => return x,
             None => {}
         }
@@ -69,9 +69,9 @@ impl Version {
         return self.pre_release == "rc".to_string()
     }
 
-    fn cmp_rc(&self, other: &Version) -> Option<Ordering> {
+    fn cmp_pre_release_number(&self, other: &Version) -> Option<Ordering> {
         if self.is_rc() {
-            return Some(self.rc.cmp(&other.rc))
+            return Some(self.pre_release_number.cmp(&other.pre_release_number))
         } else {
             return None
         }
@@ -98,7 +98,7 @@ impl Version {
 
 impl PartialEq for Version {
     fn eq(&self, other: &Version) -> bool {
-        self.main == other.main && self.rc == other.rc
+        self.main == other.main && self.pre_release_number == other.pre_release_number
     }
 }
 
@@ -117,7 +117,7 @@ fn parse_raw_version(raw_version: String) -> Version{
     let mut version_and_rc: Vec<String> = Vec::new();
     let mut pre_release: String = "".to_string();
     let mut epoch: u8 = 0;
-    let mut rc: u8 = 0;
+    let mut pre_release_number: u8 = 0;
     if raw_version.find(':') != None {
         let splitted_version: Vec<_> = raw_version.split(':').collect();
         epoch = splitted_version[0].parse().unwrap();
@@ -134,7 +134,7 @@ fn parse_raw_version(raw_version: String) -> Version{
         }
         if version_and_rc[1][..2] == "rc".to_string(){
             pre_release = "rc".to_string();
-            rc = version_and_rc[1][2..].parse().unwrap();
+            pre_release_number = version_and_rc[1][2..].parse().unwrap();
         } else {
             pre_release = version_and_rc[1].to_string();
         }
@@ -147,7 +147,7 @@ fn parse_raw_version(raw_version: String) -> Version{
         epoch: epoch,
         main: version_numbers_only,
         pre_release: pre_release,
-        rc: rc,
+        pre_release_number: pre_release_number,
     }
 }
 
