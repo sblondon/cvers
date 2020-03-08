@@ -103,15 +103,15 @@ impl PartialEq for Version {
 }
 
 pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
-    let mut version_a: Version = init_version_numbers(raw_version_a.to_string());
-    let mut version_b: Version = init_version_numbers(raw_version_b.to_string());
+    let mut version_a: Version = parse_raw_version(raw_version_a.to_string());
+    let mut version_b: Version = parse_raw_version(raw_version_b.to_string());
 
     normalize_length(&mut version_a.main, &mut version_b.main);
 
     version_a.cmp(&version_b)
 }
 
-fn init_version_numbers(raw_version: String) -> Version{
+fn parse_raw_version(raw_version: String) -> Version{
     let version_without_epoch: String;
     let mut version_numbers_only: Vec<u32> = Vec::new();
     let mut version_and_rc: Vec<String> = Vec::new();
