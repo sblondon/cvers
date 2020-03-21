@@ -77,14 +77,10 @@ impl Version {
     fn cmp_pre_release(&self, other: &Version) -> Option<Ordering> {
         if self.pre_release.len() == 0 && other.pre_release.len() == 0 {
             return None
-        } else if
-            (self.pre_release.len() == 0 && other.pre_release.len() > 0) ||
-            (self.pre_release.len() > 0 && other.pre_release.len() == 0) {
-            if self.pre_release.len() == 0 {
-                return Some(Ordering::Greater)
-            } else {
-                return Some(Ordering::Less)
-            }
+        } else if self.pre_release.len() == 0 && other.pre_release.len() > 0 {
+            return Some(Ordering::Greater)
+        } else if self.pre_release.len() > 0 && other.pre_release.len() == 0 {
+            return Some(Ordering::Less)
         }
 
         let order: Ordering = self.pre_release.cmp(&other.pre_release);
