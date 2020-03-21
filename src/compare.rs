@@ -65,10 +65,6 @@ impl Version {
         }
     }
 
-    fn is_rc(&self) -> bool {
-        return self.pre_release == "rc".to_string()
-    }
-
     fn cmp_pre_release_number(&self, other: &Version) -> Option<Ordering> {
         let order: Ordering = self.pre_release_number.cmp(&other.pre_release_number);
         if order == Ordering::Equal{
