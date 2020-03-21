@@ -186,11 +186,13 @@ mod tests {
     }
     #[test]
     fn test_compare_equal() {
-        assert_eq!(compare(&"2", &"2"), Ordering::Equal);
+        const VERSION: &str = "2";
+        assert_equal(VERSION, VERSION);
     }
     #[test]
     fn test_compare_equal_with_two_dots() {
-        assert_eq!(compare(&"2.0", &"2.0"), Ordering::Equal);
+        const VERSION: &str = "2.0";
+        assert_equal(VERSION, VERSION);
     }
     #[test]
     fn test_compare_equal_with_more_dots_in_first_arg() {
@@ -202,20 +204,24 @@ mod tests {
     }
     #[test]
     fn test_compare_equal_with_alpha() {
-        assert_eq!(compare(&"1.0-alpha", &"1.0-alpha"), Ordering::Equal);
+        const VERSION: &str = "1.0-alpha";
+        assert_equal(VERSION, VERSION);
     }
     #[test]
     fn test_compare_equal_with_beta() {
-        assert_eq!(compare(&"1.0-beta", &"1.0-beta"), Ordering::Equal);
+        const VERSION: &str = "1.0-beta";
+        assert_equal(VERSION, VERSION);
     }
     #[test]
     fn test_compare_equal_with_rc_numbers() {
         // like linux release versions
-        assert_eq!(compare(&"5.5-rc7", &"5.5-rc7"), Ordering::Equal);
+        const VERSION: &str = "5.5-rc7";
+        assert_equal(VERSION, VERSION);
     }
     #[test]
     fn test_compare_equal_with_debian_epoch() {
-        assert_eq!(compare(&"1:1.2.3", &"1:1.2.3"), Ordering::Equal);
+        const VERSION: &str = "1:1.2.3";
+        assert_equal(VERSION, VERSION);
     }
     #[test]
     fn test_not_equal_basic() {
