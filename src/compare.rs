@@ -70,25 +70,28 @@ impl Version {
         if order == Ordering::Equal{
             return None
         } else {
-            return Some(self.pre_release_number.cmp(&other.pre_release_number))
+            return Some(order)
         }
     }
 
     fn cmp_pre_release(&self, other: &Version) -> Option<Ordering> {
         if self.pre_release.len() == 0 && other.pre_release.len() == 0 {
             return None
-        }
-        if self.pre_release.len() > 0 && other.pre_release.len() > 0 {
-            if self.pre_release == other.pre_release {
-                return None
+        } else if
+            (self.pre_release.len() == 0 && other.pre_release.len() > 0) ||
+            (self.pre_release.len() > 0 && other.pre_release.len() == 0) {
+            if self.pre_release.len() == 0 {
+                return Some(Ordering::Greater)
             } else {
-                return Some(self.pre_release.cmp(&other.pre_release))
+                return Some(Ordering::Less)
             }
         }
-        if self.pre_release.len() == 0 {
-            return Some(Ordering::Greater)
+
+        let order: Ordering = self.pre_release.cmp(&other.pre_release);
+        if order == Ordering::Equal {
+           return None
         } else {
-            return Some(Ordering::Less)
+           return Some(order)
         }
     }
 }
