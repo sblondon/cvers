@@ -70,10 +70,11 @@ impl Version {
     }
 
     fn cmp_pre_release_number(&self, other: &Version) -> Option<Ordering> {
-        if self.is_rc() {
-            return Some(self.pre_release_number.cmp(&other.pre_release_number))
-        } else {
+        let order: Ordering = self.pre_release_number.cmp(&other.pre_release_number);
+        if order == Ordering::Equal{
             return None
+        } else {
+            return Some(self.pre_release_number.cmp(&other.pre_release_number))
         }
     }
 
@@ -82,7 +83,7 @@ impl Version {
             return None
         }
         if self.pre_release.len() > 0 && other.pre_release.len() > 0 {
-            if self.is_rc() && other.is_rc(){
+            if self.pre_release == other.pre_release {
                 return None
             } else {
                 return Some(self.pre_release.cmp(&other.pre_release))
@@ -136,7 +137,13 @@ fn parse_raw_version(raw_version: String) -> Version{
             pre_release = "rc".to_string();
             pre_release_number = version_and_rc[1][2..].parse().unwrap();
         } else {
-            pre_release = version_and_rc[1].to_string();
+            if version_and_rc[1].find(".") != None {
+                let splitted_prerelease: Vec<_> = version_and_rc[1].split('.').collect();
+                pre_release = splitted_prerelease[0].parse().unwrap();
+                pre_release_number = splitted_prerelease[1].parse().unwrap();
+            }else{
+                pre_release = version_and_rc[1].to_string();
+            }
         }
     } else{
         for element in version_without_epoch.split('.'){
@@ -245,6 +252,13 @@ mod tests {
         const MIN: &str = "5.5-alpha";
         assert_not_equal(MAX, MIN);
     }
+    #[test]
+    fn test_not_equal_between_alpha_sub_versions() {
+        const MAX: &str = "5.5-alpha.10";
+        const MIN: &str = "5.5-alpha.2";
+        assert_not_equal(MAX, MIN);
+    }
+
     #[test]
     fn test_not_equal_between_beta_and_rc_versions() {
         const MAX: &str = "1.0-rc1";
