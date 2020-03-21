@@ -195,12 +195,10 @@ mod tests {
         assert_equal(VERSION, VERSION);
     }
     #[test]
-    fn test_compare_equal_with_more_dots_in_first_arg() {
-        assert_eq!(compare(&"2.0.0", &"2"), Ordering::Equal);
-    }
-    #[test]
-    fn test_compare_equal_with_more_dots_in_second_arg() {
-        assert_eq!(compare(&"2", &"2.0.0"), Ordering::Equal);
+    fn test_compare_equal_with_different_dots_quantity() {
+        const FIRST: &str = "2.0";
+        const SECOND: &str = "2.0";
+        assert_equal(FIRST, SECOND);
     }
     #[test]
     fn test_compare_equal_with_alpha() {
