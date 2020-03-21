@@ -177,7 +177,12 @@ mod tests {
     use super::*;
     #[test]
     fn test_compare_compatible_with_tex_version() {
-        assert_eq!(compare(&"3.14159265", &"3.14159265"), Ordering::Equal);
+        const VERSION: &str = "3.14159265";
+        assert_equal(VERSION, VERSION);
+    }
+    fn assert_equal(first: &str, second: &str){
+        assert_eq!(compare(first, second), Ordering::Equal);
+        assert_eq!(compare(second, first), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal() {
