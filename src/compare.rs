@@ -109,7 +109,7 @@ pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
 
 fn parse_raw_version(raw_version: &str) -> Version{
     let version_without_epoch: String;
-    let mut version_numbers_only: Vec<u32> = Vec::new();
+    let mut main_version_numbers: Vec<u32> = Vec::new();
     let mut version_and_rc: Vec<String> = Vec::new();
     let mut pre_release: String = "".to_string();
     let mut epoch: u8 = 0;
@@ -126,7 +126,7 @@ fn parse_raw_version(raw_version: &str) -> Version{
     }
     if version_and_rc.len() == 2{
         for element in version_and_rc[0].split('.'){
-            version_numbers_only.push(element.parse().unwrap());
+            main_version_numbers.push(element.parse().unwrap());
         }
         if version_and_rc[1][..2] == "rc".to_string(){
             pre_release = "rc".to_string();
@@ -142,12 +142,12 @@ fn parse_raw_version(raw_version: &str) -> Version{
         }
     } else{
         for element in version_without_epoch.split('.'){
-            version_numbers_only.push(element.parse().unwrap());
+            main_version_numbers.push(element.parse().unwrap());
         }
     }
     return Version{
         epoch: epoch,
-        main: version_numbers_only,
+        main: main_version_numbers,
         pre_release: pre_release,
         pre_release_number: pre_release_number,
     }
