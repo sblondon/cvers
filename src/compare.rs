@@ -127,8 +127,8 @@ fn parse_raw_version(raw_version: &str) -> Version{
         main_version_numbers.push(element.parse().unwrap());
     }
     if version_and_prerelease.len() == 2{
-       let raw_prerelease: String = version_and_prerelease[1].to_string();
-       if raw_prerelease[..2] == "rc".to_string(){
+        let raw_prerelease: String = version_and_prerelease[1].to_string();
+        if raw_prerelease[..2] == "rc".to_string() {
             pre_release = "rc".to_string();
             pre_release_number = raw_prerelease[2..].parse().unwrap();
         } else {
