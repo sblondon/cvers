@@ -110,7 +110,6 @@ pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
 fn parse_raw_version(raw_version: &str) -> Version{
     let version_without_epoch: String;
     let mut main_version_numbers: Vec<u32> = Vec::new();
-    let mut version_and_rc: Vec<String> = Vec::new();
     let mut pre_release: String = "".to_string();
     let mut epoch: u8 = 0;
     let mut pre_release_number: u8 = 0;
@@ -121,30 +120,26 @@ fn parse_raw_version(raw_version: &str) -> Version{
     } else {
         version_without_epoch = raw_version.to_string();
     }
-    for element in version_without_epoch.split('-'){
-        version_and_rc.push(element.to_string());
+
+    let version_and_prerelease: Vec<_> = version_without_epoch.split('-').collect();
+    for element in version_and_prerelease[0].split('.'){
+        main_version_numbers.push(element.parse().unwrap());
     }
-    if version_and_rc.len() == 2{
-        for element in version_and_rc[0].split('.'){
-            main_version_numbers.push(element.parse().unwrap());
-        }
-        if version_and_rc[1][..2] == "rc".to_string(){
+    if version_and_prerelease.len() == 2{
+       if version_and_prerelease[1][..2] == "rc".to_string(){
             pre_release = "rc".to_string();
-            pre_release_number = version_and_rc[1][2..].parse().unwrap();
+            pre_release_number = version_and_prerelease[1][2..].parse().unwrap();
         } else {
-            if version_and_rc[1].find(".") != None {
-                let splitted_prerelease: Vec<_> = version_and_rc[1].split('.').collect();
+            if version_and_prerelease[1].find(".") != None {
+                let splitted_prerelease: Vec<_> = version_and_prerelease[1].split('.').collect();
                 pre_release = splitted_prerelease[0].parse().unwrap();
                 pre_release_number = splitted_prerelease[1].parse().unwrap();
             }else{
-                pre_release = version_and_rc[1].to_string();
+                pre_release = version_and_prerelease[1].to_string();
             }
         }
-    } else{
-        for element in version_without_epoch.split('.'){
-            main_version_numbers.push(element.parse().unwrap());
-        }
     }
+
     return Version{
         epoch: epoch,
         main: main_version_numbers,
