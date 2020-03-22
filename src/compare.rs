@@ -127,12 +127,13 @@ fn parse_raw_version(raw_version: &str) -> Version{
         main_version_numbers.push(element.parse().unwrap());
     }
     if version_and_prerelease.len() == 2{
-       if version_and_prerelease[1][..2] == "rc".to_string(){
+       let raw_prerelease: String = version_and_prerelease[1].to_string();
+       if raw_prerelease[..2] == "rc".to_string(){
             pre_release = "rc".to_string();
-            pre_release_number = version_and_prerelease[1][2..].parse().unwrap();
+            pre_release_number = raw_prerelease[2..].parse().unwrap();
         } else {
-            if version_and_prerelease[1].find(".") != None {
-                let splitted_prerelease: Vec<_> = version_and_prerelease[1].split('.').collect();
+            if raw_prerelease.find(".") != None {
+                let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
                 pre_release = splitted_prerelease[0].parse().unwrap();
                 pre_release_number = splitted_prerelease[1].parse().unwrap();
             }else{
