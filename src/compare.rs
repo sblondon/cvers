@@ -113,8 +113,9 @@ fn parse_raw_version(raw_version: &str) -> Version{
     let mut pre_release: String = "".to_string();
     let mut epoch: u8 = 0;
     let mut pre_release_number: u8 = 0;
-    if raw_version.find(':') != None {
-        let splitted_version: Vec<_> = raw_version.split(':').collect();
+
+    let splitted_version: Vec<_> = raw_version.split(':').collect();
+    if splitted_version.len() == 2 {
         epoch = splitted_version[0].parse().unwrap();
         version_without_epoch = splitted_version[1].to_string();
     } else {
