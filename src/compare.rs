@@ -119,7 +119,7 @@ fn parse_raw_version(raw_version: &str) -> Version{
         epoch = splitted_epoch_and_tail[0].parse().unwrap();
         version_without_epoch = splitted_epoch_and_tail[1].to_string();
     } else {
-        version_without_epoch = raw_version.to_string();
+        version_without_epoch = splitted_epoch_and_tail[0].to_string();
     }
 
     let version_and_prerelease: Vec<_> = version_without_epoch.split('-').collect();
@@ -132,13 +132,11 @@ fn parse_raw_version(raw_version: &str) -> Version{
             pre_release = "rc".to_string();
             pre_release_number = raw_prerelease[2..].parse().unwrap();
         } else {
-            if raw_prerelease.find(".") != None {
-                let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
-                pre_release = splitted_prerelease[0].parse().unwrap();
+           let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
+           pre_release = splitted_prerelease[0].parse().unwrap();
+           if splitted_prerelease.len() == 2 {
                 pre_release_number = splitted_prerelease[1].parse().unwrap();
-            }else{
-                pre_release = version_and_prerelease[1].to_string();
-            }
+           }
         }
     }
 
