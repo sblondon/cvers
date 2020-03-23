@@ -128,15 +128,15 @@ fn parse_raw_version(raw_version: &str) -> Version{
     }
     if version_and_prerelease.len() == 2{
         let raw_prerelease: String = version_and_prerelease[1].to_string();
-        if raw_prerelease[..2] == "rc".to_string() {
+        let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
+        if splitted_prerelease.len() == 2 {
+            pre_release = splitted_prerelease[0].parse().unwrap();
+            pre_release_number = splitted_prerelease[1].parse().unwrap();
+        } else if raw_prerelease[..2] == "rc".to_string() {
             pre_release = "rc".to_string();
             pre_release_number = raw_prerelease[2..].parse().unwrap();
         } else {
-           let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
-           pre_release = splitted_prerelease[0].parse().unwrap();
-           if splitted_prerelease.len() == 2 {
-                pre_release_number = splitted_prerelease[1].parse().unwrap();
-           }
+           pre_release = raw_prerelease.parse().unwrap();
         }
     }
 
@@ -257,7 +257,12 @@ mod tests {
         const MIN: &str = "5.5-alpha.2";
         assert_not_equal(MAX, MIN);
     }
-
+    #[test]
+    fn test_not_equal_between_rc_sub_versions() {
+        const MAX: &str = "5.5-rc.10";
+        const MIN: &str = "5.5-rc.2";
+        assert_not_equal(MAX, MIN);
+    }
     #[test]
     fn test_not_equal_between_beta_and_rc_versions() {
         const MAX: &str = "1.0-rc1";
