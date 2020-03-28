@@ -4,17 +4,17 @@ use std::cmp::Ordering;
 #[derive(Eq)]
 struct Version {
     epoch: u8,
-    main: Vec<u32>,
-    post_main_letter: Option<char>,
-    pre_release: String,
-    pre_release_number: u8,
+    main: MainBlock,
+    pre_release: PrereleaseBlock,
 }
 
+#[derive(Eq)]
 struct MainBlock {
     numbers: Vec<u32>,
     post_letter: Option<char>,
 }
 
+#[derive(Eq)]
 struct PrereleaseBlock {
     step: String,
     post_number: u8,
@@ -22,6 +22,18 @@ struct PrereleaseBlock {
 
 impl PartialOrd for Version {
     fn partial_cmp(&self, other: &Version) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialOrd for MainBlock {
+    fn partial_cmp(&self, other: &MainBlock) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl PartialOrd for PrereleaseBlock {
+    fn partial_cmp(&self, other: &PrereleaseBlock) -> Option<Ordering> {
         Some(self.cmp(other))
     }
 }
@@ -34,28 +46,14 @@ impl Ord for Version {
             None => {}
         }
 
-        let main_order: Option<Ordering> = self.cmp_main(other);
-        match main_order {
-            Some(x) => return x,
-            None => {}
+        let main_order: Ordering = self.main.cmp(&other.main);
+        if main_order != Ordering::Equal {
+            return main_order
         }
 
-        let post_main_letter_order: Option<Ordering> = self.cmp_post_main_letter(other);
-        match post_main_letter_order {
-            Some(x) => return x,
-            None => {}
-        }
-
-        let pre_release_order: Option<Ordering> = self.cmp_pre_release(other);
-        match pre_release_order {
-            Some(x) => return x,
-            None => {}
-        }
-
-        let pre_release_number_order: Option<Ordering> = self.cmp_pre_release_number(other);
-        match pre_release_number_order {
-            Some(x) => return x,
-            None => {}
+        let pre_release_order: Ordering = self.pre_release.cmp(&other.pre_release);
+        if pre_release_order != Ordering::Equal {
+            return pre_release_order
         }
 
         return Ordering::Equal
@@ -71,9 +69,46 @@ impl Version {
             return Some(order)
         }
     }
+}
 
-   fn cmp_main(&self, other: &Version) -> Option<Ordering> {
-        let order: Ordering = self.main.cmp(&other.main);
+impl PartialEq for Version {
+    fn eq(&self, other: &Version) -> bool {
+        self.main == other.main && self.pre_release == other.pre_release
+    }
+}
+
+impl PartialEq for MainBlock {
+    fn eq(&self, other: &MainBlock) -> bool {
+        self.numbers == other.numbers && self.post_letter == other.post_letter
+    }
+}
+
+impl PartialEq for PrereleaseBlock {
+    fn eq(&self, other: &PrereleaseBlock) -> bool {
+        self.step == other.step && self.post_number == other.post_number
+    }
+}
+
+impl Ord for MainBlock {
+    fn cmp(&self, other: &MainBlock) -> Ordering {
+        let order: Option<Ordering> = self.cmp_numbers(other);
+        match order {
+            Some(x) => return x,
+            None => {}
+        }
+
+        let order: Option<Ordering> = self.cmp_post_letter(other);
+        match order {
+            Some(x) => return x,
+            None => {}
+        }
+        return Ordering::Equal
+    }
+}
+
+impl MainBlock {
+   fn cmp_numbers(&self, other: &MainBlock) -> Option<Ordering> {
+        let order: Ordering = self.numbers.cmp(&other.numbers);
         if order == Ordering::Equal{
             return None
         } else {
@@ -81,11 +116,40 @@ impl Version {
         }
     }
 
-    fn cmp_post_main_letter(&self, other: &Version) -> Option<Ordering> {
-        if ! (self.post_main_letter.is_some() && other.post_main_letter.is_some()) {
+    fn cmp_post_letter(&self, other: &MainBlock) -> Option<Ordering> {
+        if ! (self.post_letter.is_some() && other.post_letter.is_some()) {
             return None
         }
-        let order: Ordering = self.post_main_letter.cmp(&other.post_main_letter);
+        let order: Ordering = self.post_letter.cmp(&other.post_letter);
+        if order == Ordering::Equal{
+            return None
+        } else {
+            return Some(order)
+        }
+    }
+}
+
+
+impl Ord for PrereleaseBlock {
+    fn cmp(&self, other: &PrereleaseBlock) -> Ordering {
+        let order: Option<Ordering> = self.cmp_step(other);
+        match order {
+            Some(x) => return x,
+            None => {}
+        }
+
+        let order: Option<Ordering> = self.cmp_post_number(other);
+        match order {
+            Some(x) => return x,
+            None => {}
+        }
+        return Ordering::Equal
+    }
+}
+
+impl PrereleaseBlock {
+    fn cmp_post_number(&self, other: &PrereleaseBlock) -> Option<Ordering> {
+        let order: Ordering = self.post_number.cmp(&other.post_number);
         if order == Ordering::Equal{
             return None
         } else {
@@ -93,25 +157,16 @@ impl Version {
         }
     }
 
-    fn cmp_pre_release_number(&self, other: &Version) -> Option<Ordering> {
-        let order: Ordering = self.pre_release_number.cmp(&other.pre_release_number);
-        if order == Ordering::Equal{
+    fn cmp_step(&self, other: &PrereleaseBlock) -> Option<Ordering> {
+        if self.step.len() == 0 && other.step.len() == 0 {
             return None
-        } else {
-            return Some(order)
-        }
-    }
-
-    fn cmp_pre_release(&self, other: &Version) -> Option<Ordering> {
-        if self.pre_release.len() == 0 && other.pre_release.len() == 0 {
-            return None
-        } else if self.pre_release.len() == 0 && other.pre_release.len() > 0 {
+        } else if self.step.len() == 0 && other.step.len() > 0 {
             return Some(Ordering::Greater)
-        } else if self.pre_release.len() > 0 && other.pre_release.len() == 0 {
+        } else if self.step.len() > 0 && other.step.len() == 0 {
             return Some(Ordering::Less)
         }
 
-        let order: Ordering = self.pre_release.cmp(&other.pre_release);
+        let order: Ordering = self.step.cmp(&other.step);
         if order == Ordering::Equal {
            return None
         } else {
@@ -120,17 +175,12 @@ impl Version {
     }
 }
 
-impl PartialEq for Version {
-    fn eq(&self, other: &Version) -> bool {
-        self.main == other.main && self.pre_release_number == other.pre_release_number
-    }
-}
 
 pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
     let mut version_a: Version = parse_raw_version(raw_version_a);
     let mut version_b: Version = parse_raw_version(raw_version_b);
 
-    normalize_length(&mut version_a.main, &mut version_b.main);
+    normalize_length(&mut version_a.main.numbers, &mut version_b.main.numbers);
 
     version_a.cmp(&version_b)
 }
@@ -153,10 +203,8 @@ fn parse_raw_version(raw_version: &str) -> Version{
         let prerelease_block: PrereleaseBlock = parse_prerelease(raw_prerelease);
         return Version{
             epoch: epoch,
-            main: main_block.numbers,
-            post_main_letter: main_block.post_letter,
-            pre_release: prerelease_block.step,
-            pre_release_number: prerelease_block.post_number,
+            main: main_block,
+            pre_release: prerelease_block,
         }
     } else {
         let prerelease_block = PrereleaseBlock {
@@ -165,10 +213,8 @@ fn parse_raw_version(raw_version: &str) -> Version{
         };
         return Version{
             epoch: epoch,
-            main: main_block.numbers,
-            post_main_letter: main_block.post_letter,
-            pre_release: prerelease_block.step,
-            pre_release_number: prerelease_block.post_number,
+            main: main_block,
+            pre_release: prerelease_block,
         }
     }
 }
