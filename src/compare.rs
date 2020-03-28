@@ -16,8 +16,8 @@ struct MainBlock {
 }
 
 struct PrereleaseBlock {
-    pre_release: String,
-    pre_release_number: u8,
+    step: String,
+    post_number: u8,
 }
 
 impl PartialOrd for Version {
@@ -155,20 +155,20 @@ fn parse_raw_version(raw_version: &str) -> Version{
             epoch: epoch,
             main: main_block.numbers,
             post_main_letter: main_block.post_letter,
-            pre_release: prerelease_block.pre_release,
-            pre_release_number: prerelease_block.pre_release_number,
+            pre_release: prerelease_block.step,
+            pre_release_number: prerelease_block.post_number,
         }
     } else {
         let prerelease_block = PrereleaseBlock {
-            pre_release: "".to_string(),
-            pre_release_number: 0,
+            step: "".to_string(),
+            post_number: 0,
         };
         return Version{
             epoch: epoch,
             main: main_block.numbers,
             post_main_letter: main_block.post_letter,
-            pre_release: prerelease_block.pre_release,
-            pre_release_number: prerelease_block.pre_release_number,
+            pre_release: prerelease_block.step,
+            pre_release_number: prerelease_block.post_number,
         }
     }
 }
@@ -194,21 +194,21 @@ fn parse_main_block(raw_main_block: String) -> MainBlock {
 }
 
 fn parse_prerelease(raw_prerelease: String) -> PrereleaseBlock {
-    let mut pre_release: String;
-    let mut pre_release_number: u8 = 0;
+    let mut step: String;
+    let mut post_number: u8 = 0;
     let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
     if splitted_prerelease.len() == 2 {
-        pre_release = splitted_prerelease[0].parse().unwrap();
-        pre_release_number = splitted_prerelease[1].parse().unwrap();
+        step = splitted_prerelease[0].parse().unwrap();
+        post_number = splitted_prerelease[1].parse().unwrap();
     } else if raw_prerelease[..2] == "rc".to_string() {
-        pre_release = "rc".to_string();
-        pre_release_number = raw_prerelease[2..].parse().unwrap();
+        step = "rc".to_string();
+        post_number = raw_prerelease[2..].parse().unwrap();
     } else {
-       pre_release = raw_prerelease.parse().unwrap();
+       step = raw_prerelease.parse().unwrap();
     }
     return PrereleaseBlock {
-        pre_release: pre_release,
-        pre_release_number: pre_release_number,
+        step: step,
+        post_number: post_number,
     }
 }
 
