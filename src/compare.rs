@@ -107,7 +107,7 @@ impl Ord for MainBlock {
 }
 
 impl MainBlock {
-   fn cmp_numbers(&self, other: &MainBlock) -> Option<Ordering> {
+    fn cmp_numbers(&self, other: &MainBlock) -> Option<Ordering> {
         let order: Ordering = self.numbers.cmp(&other.numbers);
         if order == Ordering::Equal{
             return None
