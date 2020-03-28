@@ -5,6 +5,7 @@ use std::cmp::Ordering;
 struct Version {
     epoch: u8,
     main: Vec<u32>,
+    post_main_letter: Option<char>,
     pre_release: String,
     pre_release_number: u8,
 }
@@ -26,6 +27,12 @@ impl Ord for Version {
 
         let main_order: Option<Ordering> = self.cmp_main(other);
         match main_order {
+            Some(x) => return x,
+            None => {}
+        }
+
+        let post_main_letter_order: Option<Ordering> = self.cmp_post_main_letter(other);
+        match post_main_letter_order {
             Some(x) => return x,
             None => {}
         }
@@ -58,6 +65,18 @@ impl Version {
 
    fn cmp_main(&self, other: &Version) -> Option<Ordering> {
         let order: Ordering = self.main.cmp(&other.main);
+        if order == Ordering::Equal{
+            return None
+        } else {
+            return Some(order)
+        }
+    }
+
+    fn cmp_post_main_letter(&self, other: &Version) -> Option<Ordering> {
+        if ! (self.post_main_letter.is_some() && other.post_main_letter.is_some()) {
+            return None
+        }
+        let order: Ordering = self.post_main_letter.cmp(&other.post_main_letter);
         if order == Ordering::Equal{
             return None
         } else {
@@ -110,6 +129,7 @@ pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
 fn parse_raw_version(raw_version: &str) -> Version{
     let version_without_epoch: String;
     let mut main_version_numbers: Vec<u32> = Vec::new();
+    let mut post_main_letter: Option<char> = None;
     let mut pre_release: String = "".to_string();
     let mut epoch: u8 = 0;
     let mut pre_release_number: u8 = 0;
@@ -124,7 +144,15 @@ fn parse_raw_version(raw_version: &str) -> Version{
 
     let version_and_prerelease: Vec<_> = version_without_epoch.split('-').collect();
     for element in version_and_prerelease[0].split('.'){
-        main_version_numbers.push(element.parse().unwrap());
+        let subversion: String = element.to_string();
+        let index_without_last_char: usize = subversion.chars().count() - 1;
+        let last_char_is_letter: bool = ! element.chars().last().unwrap().is_digit(10);
+        if last_char_is_letter {
+            main_version_numbers.push(element[0..index_without_last_char].parse().unwrap());
+            post_main_letter = subversion.chars().rev().next();
+        } else {
+            main_version_numbers.push(element.parse().unwrap());
+        }
     }
     if version_and_prerelease.len() == 2{
         let raw_prerelease: String = version_and_prerelease[1].to_string();
@@ -143,6 +171,7 @@ fn parse_raw_version(raw_version: &str) -> Version{
     return Version{
         epoch: epoch,
         main: main_version_numbers,
+        post_main_letter: post_main_letter,
         pre_release: pre_release,
         pre_release_number: pre_release_number,
     }
@@ -261,6 +290,13 @@ mod tests {
     fn test_not_equal_between_rc_sub_versions() {
         const MAX: &str = "5.5-rc.10";
         const MIN: &str = "5.5-rc.2";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_between_minor_number_followed_by_letter() {
+        // like openssl versions
+        const MAX: &str = "1.0.2e";
+        const MIN: &str = "1.0.2d";
         assert_not_equal(MAX, MIN);
     }
     #[test]
