@@ -196,24 +196,20 @@ fn parse_raw_version(raw_version: &str) -> Version{
 
     let version_and_prerelease: Vec<_> = version_without_epoch.split('-').collect();
     let main_block: MainBlock = parse_main_block(version_and_prerelease[0].to_string());
+    let prerelease_block: PrereleaseBlock;
     if version_and_prerelease.len() == 2{
         let raw_prerelease: String = version_and_prerelease[1].to_string();
-        let prerelease_block: PrereleaseBlock = parse_prerelease(raw_prerelease);
-        return Version{
-            epoch: epoch,
-            main: main_block,
-            pre_release: prerelease_block,
-        }
+        prerelease_block = parse_prerelease(raw_prerelease);
     } else {
-        let prerelease_block = PrereleaseBlock {
+        prerelease_block = PrereleaseBlock {
             step: "".to_string(),
             post_number: 0,
         };
-        return Version{
-            epoch: epoch,
-            main: main_block,
-            pre_release: prerelease_block,
-        }
+    }
+    return Version {
+        epoch: epoch,
+        main: main_block,
+        pre_release: prerelease_block,
     }
 }
 
