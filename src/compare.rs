@@ -10,6 +10,10 @@ struct Version {
     pre_release_number: u8,
 }
 
+struct MainBlock {
+    numbers: Vec<u32>,
+    post_letter: Option<char>,
+}
 
 impl PartialOrd for Version {
     fn partial_cmp(&self, other: &Version) -> Option<Ordering> {
@@ -128,8 +132,6 @@ pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
 
 fn parse_raw_version(raw_version: &str) -> Version{
     let version_without_epoch: String;
-    let mut main_version_numbers: Vec<u32> = Vec::new();
-    let mut post_main_letter: Option<char> = None;
     let mut pre_release: String = "".to_string();
     let mut epoch: u8 = 0;
     let mut pre_release_number: u8 = 0;
@@ -143,17 +145,7 @@ fn parse_raw_version(raw_version: &str) -> Version{
     }
 
     let version_and_prerelease: Vec<_> = version_without_epoch.split('-').collect();
-    for element in version_and_prerelease[0].split('.'){
-        let subversion: String = element.to_string();
-        let index_without_last_char: usize = subversion.chars().count() - 1;
-        let last_char_is_letter: bool = ! element.chars().last().unwrap().is_digit(10);
-        if last_char_is_letter {
-            main_version_numbers.push(element[0..index_without_last_char].parse().unwrap());
-            post_main_letter = subversion.chars().rev().next();
-        } else {
-            main_version_numbers.push(element.parse().unwrap());
-        }
-    }
+    let main_block: MainBlock = parse_main_block(version_and_prerelease[0].to_string());
     if version_and_prerelease.len() == 2{
         let raw_prerelease: String = version_and_prerelease[1].to_string();
         let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
@@ -170,10 +162,30 @@ fn parse_raw_version(raw_version: &str) -> Version{
 
     return Version{
         epoch: epoch,
-        main: main_version_numbers,
-        post_main_letter: post_main_letter,
+        main: main_block.numbers,
+        post_main_letter: main_block.post_letter,
         pre_release: pre_release,
         pre_release_number: pre_release_number,
+    }
+}
+
+fn parse_main_block(raw_main_block: String) -> MainBlock {
+    let mut main_version_numbers: Vec<u32> = Vec::new();
+    let mut post_main_letter: Option<char> = None;
+    for element in raw_main_block.split('.'){
+        let subversion: String = element.to_string();
+        let index_without_last_char: usize = subversion.chars().count() - 1;
+        let last_char_is_letter: bool = ! element.chars().last().unwrap().is_digit(10);
+        if last_char_is_letter {
+            main_version_numbers.push(element[0..index_without_last_char].parse().unwrap());
+            post_main_letter = subversion.chars().rev().next();
+        } else {
+            main_version_numbers.push(element.parse().unwrap());
+        }
+    }
+    return MainBlock {
+        numbers: main_version_numbers,
+        post_letter: post_main_letter,
     }
 }
 
