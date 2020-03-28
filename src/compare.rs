@@ -15,6 +15,11 @@ struct MainBlock {
     post_letter: Option<char>,
 }
 
+struct PrereleaseBlock {
+    pre_release: String,
+    pre_release_number: u8,
+}
+
 impl PartialOrd for Version {
     fn partial_cmp(&self, other: &Version) -> Option<Ordering> {
         Some(self.cmp(other))
@@ -132,10 +137,7 @@ pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
 
 fn parse_raw_version(raw_version: &str) -> Version{
     let version_without_epoch: String;
-    let mut pre_release: String = "".to_string();
     let mut epoch: u8 = 0;
-    let mut pre_release_number: u8 = 0;
-
     let splitted_epoch_and_tail: Vec<_> = raw_version.split(':').collect();
     if splitted_epoch_and_tail.len() == 2 {
         epoch = splitted_epoch_and_tail[0].parse().unwrap();
@@ -148,24 +150,26 @@ fn parse_raw_version(raw_version: &str) -> Version{
     let main_block: MainBlock = parse_main_block(version_and_prerelease[0].to_string());
     if version_and_prerelease.len() == 2{
         let raw_prerelease: String = version_and_prerelease[1].to_string();
-        let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
-        if splitted_prerelease.len() == 2 {
-            pre_release = splitted_prerelease[0].parse().unwrap();
-            pre_release_number = splitted_prerelease[1].parse().unwrap();
-        } else if raw_prerelease[..2] == "rc".to_string() {
-            pre_release = "rc".to_string();
-            pre_release_number = raw_prerelease[2..].parse().unwrap();
-        } else {
-           pre_release = raw_prerelease.parse().unwrap();
+        let prerelease_block: PrereleaseBlock = parse_prerelease(raw_prerelease);
+        return Version{
+            epoch: epoch,
+            main: main_block.numbers,
+            post_main_letter: main_block.post_letter,
+            pre_release: prerelease_block.pre_release,
+            pre_release_number: prerelease_block.pre_release_number,
         }
-    }
-
-    return Version{
-        epoch: epoch,
-        main: main_block.numbers,
-        post_main_letter: main_block.post_letter,
-        pre_release: pre_release,
-        pre_release_number: pre_release_number,
+    } else {
+        let prerelease_block = PrereleaseBlock {
+            pre_release: "".to_string(),
+            pre_release_number: 0,
+        };
+        return Version{
+            epoch: epoch,
+            main: main_block.numbers,
+            post_main_letter: main_block.post_letter,
+            pre_release: prerelease_block.pre_release,
+            pre_release_number: prerelease_block.pre_release_number,
+        }
     }
 }
 
@@ -186,6 +190,25 @@ fn parse_main_block(raw_main_block: String) -> MainBlock {
     return MainBlock {
         numbers: main_version_numbers,
         post_letter: post_main_letter,
+    }
+}
+
+fn parse_prerelease(raw_prerelease: String) -> PrereleaseBlock {
+    let mut pre_release: String;
+    let mut pre_release_number: u8 = 0;
+    let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
+    if splitted_prerelease.len() == 2 {
+        pre_release = splitted_prerelease[0].parse().unwrap();
+        pre_release_number = splitted_prerelease[1].parse().unwrap();
+    } else if raw_prerelease[..2] == "rc".to_string() {
+        pre_release = "rc".to_string();
+        pre_release_number = raw_prerelease[2..].parse().unwrap();
+    } else {
+       pre_release = raw_prerelease.parse().unwrap();
+    }
+    return PrereleaseBlock {
+        pre_release: pre_release,
+        pre_release_number: pre_release_number,
     }
 }
 
