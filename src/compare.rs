@@ -177,10 +177,8 @@ impl PrereleaseBlock {
 
 
 pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
-    let mut version_a: Version = parse_raw_version(raw_version_a);
-    let mut version_b: Version = parse_raw_version(raw_version_b);
-
-    normalize_length(&mut version_a.main.numbers, &mut version_b.main.numbers);
+    let version_a: Version = parse_raw_version(raw_version_a);
+    let version_b: Version = parse_raw_version(raw_version_b);
 
     version_a.cmp(&version_b)
 }
@@ -256,22 +254,6 @@ fn parse_prerelease(raw_prerelease: String) -> PrereleaseBlock {
         step: step,
         post_number: post_number,
     }
-}
-
-fn normalize_length(mut _version_a: &mut Vec<u32>, mut _version_b: &mut Vec<u32>){
-    let difference: i32 = _version_a.len() as i32 - _version_b.len() as i32;
-    if difference > 0 {
-        fill_lacking_numbers(&mut _version_b, difference);
-    } else {
-        fill_lacking_numbers(&mut _version_a, difference * -1);
-    }
-}
-
-fn fill_lacking_numbers(fillable: &mut Vec<u32>, mut size: i32){
-        while size != 0 {
-            fillable.push(0);
-            size -= 1
-        }
 }
 
 
