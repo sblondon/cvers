@@ -117,9 +117,14 @@ impl MainBlock {
     }
 
     fn cmp_post_letter(&self, other: &MainBlock) -> Option<Ordering> {
-        if ! (self.post_letter.is_some() && other.post_letter.is_some()) {
+        if self.post_letter.is_none() && other.post_letter.is_none() {
             return None
+        } else if self.post_letter.is_some() && other.post_letter.is_none() {
+            return Some(Ordering::Greater)
+        } else if self.post_letter.is_none() && other.post_letter.is_some() {
+            return Some(Ordering::Less)
         }
+
         let order: Ordering = self.post_letter.cmp(&other.post_letter);
         if order == Ordering::Equal{
             return None
@@ -356,6 +361,13 @@ mod tests {
         // like openssl versions
         const MAX: &str = "1.0.2e";
         const MIN: &str = "1.0.2d";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_between_minor_number_followed_by_letter_and_no_letter() {
+        // like openssl versions
+        const MAX: &str = "1.0.2a";
+        const MIN: &str = "1.0.2";
         assert_not_equal(MAX, MIN);
     }
     #[test]
