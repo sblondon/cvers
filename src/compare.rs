@@ -117,12 +117,11 @@ impl MainBlock {
     }
 
     fn cmp_post_letter(&self, other: &MainBlock) -> Option<Ordering> {
-        if self.post_letter.is_none() && other.post_letter.is_none() {
-            return None
-        } else if self.post_letter.is_some() && other.post_letter.is_none() {
-            return Some(Ordering::Greater)
-        } else if self.post_letter.is_none() && other.post_letter.is_some() {
-            return Some(Ordering::Less)
+        match [self.post_letter, other.post_letter] {
+            [None, None] => return None,
+            [Some(_), None] => return Some(Ordering::Greater),
+            [None, Some(_)] => return Some(Ordering::Less),
+            _ => {}
         }
 
         let order: Ordering = self.post_letter.cmp(&other.post_letter);
@@ -163,12 +162,11 @@ impl PrereleaseBlock {
     }
 
     fn cmp_step(&self, other: &PrereleaseBlock) -> Option<Ordering> {
-        if self.step.len() == 0 && other.step.len() == 0 {
-            return None
-        } else if self.step.len() == 0 && other.step.len() > 0 {
-            return Some(Ordering::Greater)
-        } else if self.step.len() > 0 && other.step.len() == 0 {
-            return Some(Ordering::Less)
+        match [self.step.len(), other.step.len()] {
+            [0, 0]  => return None,
+            [0, x] if x > 0 => return Some(Ordering::Greater),
+            [x, 0] if x > 0 => return Some(Ordering::Less),
+            _ => {}
         }
 
         let order: Ordering = self.step.cmp(&other.step);
