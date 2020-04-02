@@ -237,7 +237,7 @@ fn parse_main_block(raw_main_block: String) -> MainBlock {
 }
 
 fn parse_prerelease(raw_prerelease: String) -> PrereleaseBlock {
-    let mut step: String;
+    let step: String;
     let mut post_number: u8 = 0;
     let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
     if splitted_prerelease.len() == 2 {
