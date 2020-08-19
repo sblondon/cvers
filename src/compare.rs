@@ -17,7 +17,7 @@ struct MainBlock {
 #[derive(Eq)]
 struct PrereleaseBlock {
     step: String,
-    post_number: u8,
+    post_number: Option<u8>,
 }
 
 impl PartialOrd for Version {
@@ -160,6 +160,13 @@ impl Ord for PrereleaseBlock {
 
 impl PrereleaseBlock {
     fn cmp_post_number(&self, other: &PrereleaseBlock) -> Option<Ordering> {
+        match [self.post_number, other.post_number] {
+            [None, None] => return None,
+            [Some(_), None] => return Some(Ordering::Greater),
+            [None, Some(_)] => return Some(Ordering::Less),
+            _ => {}
+        }
+
         let order: Ordering = self.post_number.cmp(&other.post_number);
         if order == Ordering::Equal{
             return None
@@ -213,7 +220,7 @@ fn parse_raw_version(raw_version: &str) -> Version{
     } else {
         prerelease_block = PrereleaseBlock {
             step: "".to_string(),
-            post_number: 0,
+            post_number: None,
         };
     }
     return Version {
@@ -245,14 +252,14 @@ fn parse_main_block(raw_main_block: String) -> MainBlock {
 
 fn parse_prerelease(raw_prerelease: String) -> PrereleaseBlock {
     let step: String;
-    let mut post_number: u8 = 0;
+    let mut post_number: Option<u8> = None;
     let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
     if splitted_prerelease.len() == 2 {
         step = splitted_prerelease[0].parse().unwrap();
-        post_number = splitted_prerelease[1].parse().unwrap();
+        post_number = Some(splitted_prerelease[1].parse().unwrap());
     } else if raw_prerelease[..2] == "rc".to_string() {
         step = "rc".to_string();
-        post_number = raw_prerelease[2..].parse().unwrap();
+        post_number = Some(raw_prerelease[2..].parse().unwrap());
     } else {
        step = raw_prerelease.parse().unwrap();
     }
