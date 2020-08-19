@@ -63,17 +63,17 @@ impl Ord for Version {
 impl Version {
     fn cmp_epoch(&self, other: &Version) -> Option<Ordering> {
         match [self.epoch, other.epoch] {
-            [None, None] => return None,
-            [Some(_), None] => return Some(Ordering::Greater),
-            [None, Some(_)] => return Some(Ordering::Less),
-            _ => {}
-        }
-
-        let order: Ordering = self.epoch.cmp(&other.epoch);
-        if order == Ordering::Equal{
-            return None
-        } else {
-            return Some(order)
+            [None, None] => None,
+            [Some(_), None] => Some(Ordering::Greater),
+            [None, Some(_)] => Some(Ordering::Less),
+            [Some(_), Some(_)] => {
+                let order: Ordering = self.epoch.cmp(&other.epoch);
+                if order == Ordering::Equal{
+                    None
+                } else {
+                    Some(order)
+                }
+            }
         }
     }
 }
@@ -161,17 +161,17 @@ impl Ord for PrereleaseBlock {
 impl PrereleaseBlock {
     fn cmp_post_number(&self, other: &PrereleaseBlock) -> Option<Ordering> {
         match [self.post_number, other.post_number] {
-            [None, None] => return None,
-            [Some(_), None] => return Some(Ordering::Greater),
-            [None, Some(_)] => return Some(Ordering::Less),
-            _ => {}
-        }
-
-        let order: Ordering = self.post_number.cmp(&other.post_number);
-        if order == Ordering::Equal{
-            return None
-        } else {
-            return Some(order)
+            [None, None] => None,
+            [Some(_), None] => Some(Ordering::Greater),
+            [None, Some(_)] => Some(Ordering::Less),
+            [Some(_), Some(_)] => {
+                let order: Ordering = self.post_number.cmp(&other.post_number);
+                if order == Ordering::Equal{
+                    None
+                } else {
+                    Some(order)
+                }
+            }
         }
     }
 
