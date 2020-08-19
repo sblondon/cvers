@@ -3,7 +3,7 @@ use std::cmp::Ordering;
 
 #[derive(Eq)]
 struct Version {
-    epoch: u8,
+    epoch: Option<u8>,
     main: MainBlock,
     pre_release: PrereleaseBlock,
 }
@@ -62,6 +62,13 @@ impl Ord for Version {
 
 impl Version {
     fn cmp_epoch(&self, other: &Version) -> Option<Ordering> {
+        match [self.epoch, other.epoch] {
+            [None, None] => return None,
+            [Some(_), None] => return Some(Ordering::Greater),
+            [None, Some(_)] => return Some(Ordering::Less),
+            _ => {}
+        }
+
         let order: Ordering = self.epoch.cmp(&other.epoch);
         if order == Ordering::Equal{
             return None
@@ -188,10 +195,10 @@ pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
 
 fn parse_raw_version(raw_version: &str) -> Version{
     let version_without_epoch: String;
-    let mut epoch: u8 = 0;
+    let mut epoch: Option<u8> = None;
     let splitted_epoch_and_tail: Vec<_> = raw_version.split(':').collect();
     if splitted_epoch_and_tail.len() == 2 {
-        epoch = splitted_epoch_and_tail[0].parse().unwrap();
+        epoch = Some(splitted_epoch_and_tail[0].parse().unwrap());
         version_without_epoch = splitted_epoch_and_tail[1].to_string();
     } else {
         version_without_epoch = splitted_epoch_and_tail[0].to_string();
