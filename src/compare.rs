@@ -143,51 +143,35 @@ impl MainBlock {
 
 impl Ord for PrereleaseBlock {
     fn cmp(&self, other: &PrereleaseBlock) -> Ordering {
-        let order: Option<Ordering> = self.cmp_step(other);
-        match order {
-            Some(x) => return x,
-            None => {}
+        let order: Ordering = self.cmp_step(other);
+        if order != Ordering::Equal {
+            return order
         }
 
-        let order: Option<Ordering> = self.cmp_post_number(other);
-        match order {
-            Some(x) => return x,
-            None => {}
-        }
-        return Ordering::Equal
+        return self.cmp_post_number(other);
     }
 }
 
 impl PrereleaseBlock {
-    fn cmp_post_number(&self, other: &PrereleaseBlock) -> Option<Ordering> {
+    fn cmp_post_number(&self, other: &PrereleaseBlock) -> Ordering {
         match [self.post_number, other.post_number] {
-            [None, None] => None,
-            [Some(_), None] => Some(Ordering::Greater),
-            [None, Some(_)] => Some(Ordering::Less),
+            [None, None] => Ordering::Equal,
+            [Some(_), None] => Ordering::Greater,
+            [None, Some(_)] => Ordering::Less,
             [Some(_), Some(_)] => {
-                let order: Ordering = self.post_number.cmp(&other.post_number);
-                if order == Ordering::Equal{
-                    None
-                } else {
-                    Some(order)
-                }
+                self.post_number.cmp(&other.post_number)
             }
         }
     }
 
-    fn cmp_step(&self, other: &PrereleaseBlock) -> Option<Ordering> {
+    fn cmp_step(&self, other: &PrereleaseBlock) -> Ordering {
         match [self.step.len(), other.step.len()] {
-            [0, 0]  => return None,
-            [0, x] if x > 0 => return Some(Ordering::Greater),
-            [x, 0] if x > 0 => return Some(Ordering::Less),
-            _ => {}
-        }
-
-        let order: Ordering = self.step.cmp(&other.step);
-        if order == Ordering::Equal {
-           return None
-        } else {
-           return Some(order)
+            [0, 0]  => return Ordering::Equal,
+            [0, x] if x > 0 => return Ordering::Greater,
+            [x, 0] if x > 0 => return Ordering::Less,
+            _ => {
+                self.step.cmp(&other.step)
+            }
         }
     }
 }
