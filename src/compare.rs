@@ -5,7 +5,7 @@ use std::cmp::Ordering;
 struct Version {
     epoch: Option<u8>,
     main: MainBlock,
-    pre_release: PrereleaseBlock,
+    pre_release: Option<PrereleaseBlock>,
 }
 
 #[derive(Eq)]
@@ -50,12 +50,14 @@ impl Ord for Version {
             return main_order
         }
 
-        let pre_release_order: Ordering = self.pre_release.cmp(&other.pre_release);
-        if pre_release_order != Ordering::Equal {
-            return pre_release_order
+        match [&self.pre_release, &other.pre_release] {
+            [None, None] => Ordering::Equal,
+            [Some(_), None] => Ordering::Less,
+            [None, Some(_)] => Ordering::Greater,
+            [Some(_), Some(_)] => {
+               self.pre_release.cmp(&other.pre_release)
+            }
         }
-
-        return Ordering::Equal
     }
 }
 
@@ -144,7 +146,6 @@ impl PrereleaseBlock {
 
     fn cmp_step(&self, other: &PrereleaseBlock) -> Ordering {
         match [self.step.len(), other.step.len()] {
-            [0, 0]  => return Ordering::Equal,
             [0, x] if x > 0 => return Ordering::Greater,
             [x, 0] if x > 0 => return Ordering::Less,
             _ => {
@@ -175,15 +176,10 @@ fn parse_raw_version(raw_version: &str) -> Version{
 
     let version_and_prerelease: Vec<_> = version_without_epoch.split('-').collect();
     let main_block: MainBlock = parse_main_block(version_and_prerelease[0].to_string());
-    let prerelease_block: PrereleaseBlock;
-    if version_and_prerelease.len() == 2{
+    let mut prerelease_block: Option<PrereleaseBlock> = None;
+    if version_and_prerelease.len() == 2 {
         let raw_prerelease: String = version_and_prerelease[1].to_string();
-        prerelease_block = parse_prerelease(raw_prerelease);
-    } else {
-        prerelease_block = PrereleaseBlock {
-            step: "".to_string(),
-            post_number: None,
-        };
+        prerelease_block = Some(parse_prerelease(raw_prerelease));
     }
     return Version {
         epoch: epoch,
