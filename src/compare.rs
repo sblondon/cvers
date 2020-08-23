@@ -40,10 +40,9 @@ impl PartialOrd for PrereleaseBlock {
 
 impl Ord for Version {
     fn cmp(&self, other: &Version) -> Ordering {
-        let epoch_order: Option<Ordering> = self.cmp_epoch(other);
-        match epoch_order {
-            Some(x) => return x,
-            None => {}
+        let epoch_order: Ordering = self.cmp_epoch(other);
+        if epoch_order != Ordering::Equal {
+            return epoch_order
         }
 
         let main_order: Ordering = self.main.cmp(&other.main);
@@ -61,18 +60,13 @@ impl Ord for Version {
 }
 
 impl Version {
-    fn cmp_epoch(&self, other: &Version) -> Option<Ordering> {
+    fn cmp_epoch(&self, other: &Version) -> Ordering {
         match [self.epoch, other.epoch] {
-            [None, None] => None,
-            [Some(_), None] => Some(Ordering::Greater),
-            [None, Some(_)] => Some(Ordering::Less),
+            [None, None] => Ordering::Equal,
+            [Some(_), None] => Ordering::Greater,
+            [None, Some(_)] => Ordering::Less,
             [Some(_), Some(_)] => {
-                let order: Ordering = self.epoch.cmp(&other.epoch);
-                if order == Ordering::Equal{
-                    None
-                } else {
-                    Some(order)
-                }
+                self.epoch.cmp(&other.epoch)
             }
         }
     }
@@ -98,45 +92,29 @@ impl PartialEq for PrereleaseBlock {
 
 impl Ord for MainBlock {
     fn cmp(&self, other: &MainBlock) -> Ordering {
-        let order: Option<Ordering> = self.cmp_numbers(other);
-        match order {
-            Some(x) => return x,
-            None => {}
+        let order: Ordering = self.cmp_numbers(other);
+        if order != Ordering::Equal {
+            return order
         }
 
-        let order: Option<Ordering> = self.cmp_post_letter(other);
-        match order {
-            Some(x) => return x,
-            None => {}
-        }
-        return Ordering::Equal
+        self.cmp_post_letter(other)
     }
 }
 
 impl MainBlock {
-    fn cmp_numbers(&self, other: &MainBlock) -> Option<Ordering> {
-        let order: Ordering = self.numbers.cmp(&other.numbers);
-        if order == Ordering::Equal{
-            return None
-        } else {
-            return Some(order)
-        }
+    fn cmp_numbers(&self, other: &MainBlock) -> Ordering {
+        self.numbers.cmp(&other.numbers)
     }
 
-    fn cmp_post_letter(&self, other: &MainBlock) -> Option<Ordering> {
+    fn cmp_post_letter(&self, other: &MainBlock) -> Ordering {
         match [self.post_letter, other.post_letter] {
-            [None, None] => return None,
-            [Some(_), None] => return Some(Ordering::Greater),
-            [None, Some(_)] => return Some(Ordering::Less),
+            [None, None] => return Ordering::Equal,
+            [Some(_), None] => return Ordering::Greater,
+            [None, Some(_)] => return Ordering::Less,
             _ => {}
         }
 
-        let order: Ordering = self.post_letter.cmp(&other.post_letter);
-        if order == Ordering::Equal{
-            return None
-        } else {
-            return Some(order)
-        }
+        self.post_letter.cmp(&other.post_letter)
     }
 }
 
