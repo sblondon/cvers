@@ -108,13 +108,13 @@ impl MainBlock {
 
     fn cmp_post_letter(&self, other: &MainBlock) -> Ordering {
         match [self.post_letter, other.post_letter] {
-            [None, None] => return Ordering::Equal,
-            [Some(_), None] => return Ordering::Greater,
-            [None, Some(_)] => return Ordering::Less,
-            _ => {}
+            [None, None] => Ordering::Equal,
+            [Some(_), None] => Ordering::Greater,
+            [None, Some(_)] => Ordering::Less,
+            [Some(_), Some(_)] => {
+                self.post_letter.cmp(&other.post_letter)
+            }
         }
-
-        self.post_letter.cmp(&other.post_letter)
     }
 }
 
