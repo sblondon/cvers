@@ -3,9 +3,9 @@ use std::cmp::Ordering;
 
 pub fn display(order: Ordering)-> String{
     match order {
-        Ordering::Less => {return "<".to_string();},
-        Ordering::Equal => {return "=".to_string();},
-        Ordering::Greater => {return ">".to_string();}
+        Ordering::Less => "<".to_string(),
+        Ordering::Equal => "=".to_string(),
+        Ordering::Greater => ">".to_string()
     }
 }
 
