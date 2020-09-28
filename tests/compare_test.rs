@@ -1,5 +1,5 @@
 mod compare {
-    include!{"../src/compare.rs"}
+    include!{"../src/compare/compare.rs"}
 }
 
 #[cfg(test)]
