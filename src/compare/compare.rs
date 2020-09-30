@@ -1,169 +1,14 @@
 use std::cmp::Ordering;
 
 
-#[derive(Eq)]
-struct Version {
-    epoch: Option<u8>,
-    main: MainBlock,
-    pre_release: Option<PrereleaseBlock>,
-}
-
-#[derive(Eq)]
-struct MainBlock {
-    numbers: Vec<u32>,
-    post_letter: Option<char>,
-}
-
-#[derive(Eq)]
-struct PrereleaseBlock {
-    step: String,
-    post_number: Option<u8>,
-}
-
-impl PartialOrd for Version {
-    fn partial_cmp(&self, other: &Version) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialOrd for MainBlock {
-    fn partial_cmp(&self, other: &MainBlock) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl PartialOrd for PrereleaseBlock {
-    fn partial_cmp(&self, other: &PrereleaseBlock) -> Option<Ordering> {
-        Some(self.cmp(other))
-    }
-}
-
-impl Ord for Version {
-    fn cmp(&self, other: &Version) -> Ordering {
-        let epoch_order: Ordering = self.cmp_epoch(other);
-        if epoch_order != Ordering::Equal {
-            return epoch_order
-        }
-
-        let main_order: Ordering = self.main.cmp(&other.main);
-        if main_order != Ordering::Equal {
-            return main_order
-        }
-
-        match [&self.pre_release, &other.pre_release] {
-            [None, None] => Ordering::Equal,
-            [Some(_), None] => Ordering::Less,
-            [None, Some(_)] => Ordering::Greater,
-            [Some(_), Some(_)] => {
-               self.pre_release.cmp(&other.pre_release)
-            }
-        }
-    }
-}
-
-impl Version {
-    fn cmp_epoch(&self, other: &Version) -> Ordering {
-        match [self.epoch, other.epoch] {
-            [None, None] => Ordering::Equal,
-            [Some(_), None] => Ordering::Greater,
-            [None, Some(_)] => Ordering::Less,
-            [Some(_), Some(_)] => {
-                self.epoch.cmp(&other.epoch)
-            }
-        }
-    }
-}
-
-impl PartialEq for Version {
-    fn eq(&self, other: &Version) -> bool {
-        self.main == other.main && self.pre_release == other.pre_release
-    }
-}
-
-impl PartialEq for MainBlock {
-    fn eq(&self, other: &MainBlock) -> bool {
-        self.numbers == other.numbers && self.post_letter == other.post_letter
-    }
-}
-
-impl PartialEq for PrereleaseBlock {
-    fn eq(&self, other: &PrereleaseBlock) -> bool {
-        self.step == other.step && self.post_number == other.post_number
-    }
-}
-
-impl Ord for MainBlock {
-    fn cmp(&self, other: &MainBlock) -> Ordering {
-        let order: Ordering = self.cmp_numbers(other);
-        if order != Ordering::Equal {
-            return order
-        }
-
-        self.cmp_post_letter(other)
-    }
-}
-
-impl MainBlock {
-    fn cmp_numbers(&self, other: &MainBlock) -> Ordering {
-        self.numbers.cmp(&other.numbers)
-    }
-
-    fn cmp_post_letter(&self, other: &MainBlock) -> Ordering {
-        match [self.post_letter, other.post_letter] {
-            [None, None] => Ordering::Equal,
-            [Some(_), None] => Ordering::Greater,
-            [None, Some(_)] => Ordering::Less,
-            [Some(_), Some(_)] => {
-                self.post_letter.cmp(&other.post_letter)
-            }
-        }
-    }
-}
-
-
-impl Ord for PrereleaseBlock {
-    fn cmp(&self, other: &PrereleaseBlock) -> Ordering {
-        let order: Ordering = self.cmp_step(other);
-        if order != Ordering::Equal {
-            return order
-        }
-
-        return self.cmp_post_number(other);
-    }
-}
-
-impl PrereleaseBlock {
-    fn cmp_post_number(&self, other: &PrereleaseBlock) -> Ordering {
-        match [self.post_number, other.post_number] {
-            [None, None] => Ordering::Equal,
-            [Some(_), None] => Ordering::Greater,
-            [None, Some(_)] => Ordering::Less,
-            [Some(_), Some(_)] => {
-                self.post_number.cmp(&other.post_number)
-            }
-        }
-    }
-
-    fn cmp_step(&self, other: &PrereleaseBlock) -> Ordering {
-        match [self.step.len(), other.step.len()] {
-            [0, x] if x > 0 => return Ordering::Greater,
-            [x, 0] if x > 0 => return Ordering::Less,
-            _ => {
-                self.step.cmp(&other.step)
-            }
-        }
-    }
-}
-
-
 pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
-    let version_a: Version = parse_raw_version(raw_version_a);
-    let version_b: Version = parse_raw_version(raw_version_b);
+    let version_a: super::structs::Version = parse_raw_version(raw_version_a);
+    let version_b: super::structs::Version = parse_raw_version(raw_version_b);
 
     version_a.cmp(&version_b)
 }
 
-fn parse_raw_version(raw_version: &str) -> Version{
+fn parse_raw_version(raw_version: &str) -> super::structs::Version{
     let version_without_epoch: String;
     let mut epoch: Option<u8> = None;
     let splitted_epoch_and_tail: Vec<_> = raw_version.split(':').collect();
@@ -175,20 +20,20 @@ fn parse_raw_version(raw_version: &str) -> Version{
     }
 
     let version_and_prerelease: Vec<_> = version_without_epoch.split('-').collect();
-    let main_block: MainBlock = parse_main_block(version_and_prerelease[0].to_string());
-    let mut prerelease_block: Option<PrereleaseBlock> = None;
+    let main_block: super::structs::MainBlock = parse_main_block(version_and_prerelease[0].to_string());
+    let mut prerelease_block: Option<super::structs::PrereleaseBlock> = None;
     if version_and_prerelease.len() == 2 {
         let raw_prerelease: String = version_and_prerelease[1].to_string();
         prerelease_block = Some(parse_prerelease(raw_prerelease));
     }
-    return Version {
+    return super::structs::Version {
         epoch: epoch,
         main: main_block,
         pre_release: prerelease_block,
     }
 }
 
-fn parse_main_block(raw_main_block: String) -> MainBlock {
+fn parse_main_block(raw_main_block: String) -> super::structs::MainBlock {
     let mut main_version_numbers: Vec<u32> = Vec::new();
     let mut post_main_letter: Option<char> = None;
     for element in raw_main_block.split('.'){
@@ -202,13 +47,13 @@ fn parse_main_block(raw_main_block: String) -> MainBlock {
             main_version_numbers.push(element.parse().unwrap());
         }
     }
-    return MainBlock {
+    return super::structs::MainBlock {
         numbers: main_version_numbers,
         post_letter: post_main_letter,
     }
 }
 
-fn parse_prerelease(raw_prerelease: String) -> PrereleaseBlock {
+fn parse_prerelease(raw_prerelease: String) -> super::structs::PrereleaseBlock {
     let step: String;
     let mut post_number: Option<u8> = None;
     let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
@@ -221,8 +66,143 @@ fn parse_prerelease(raw_prerelease: String) -> PrereleaseBlock {
     } else {
        step = raw_prerelease.parse().unwrap();
     }
-    return PrereleaseBlock {
+    return super::structs::PrereleaseBlock {
         step: step,
         post_number: post_number,
     }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::cmp::Ordering;
+
+    #[test]
+    fn test_compare_compatible_with_tex_version() {
+        const VERSION: &str = "3.14159265";
+        assert_equal(VERSION, VERSION);
+    }
+    fn assert_equal(first: &str, second: &str){
+        assert_eq!(compare(first, second), Ordering::Equal);
+        assert_eq!(compare(second, first), Ordering::Equal);
+    }
+    #[test]
+    fn test_compare_equal() {
+        const VERSION: &str = "2";
+        assert_equal(VERSION, VERSION);
+    }
+    #[test]
+    fn test_compare_equal_with_two_dots() {
+        const VERSION: &str = "2.0";
+        assert_equal(VERSION, VERSION);
+    }
+    #[test]
+    fn test_compare_equal_with_different_dots_quantity() {
+        const FIRST: &str = "2.0";
+        const SECOND: &str = "2.0";
+        assert_equal(FIRST, SECOND);
+    }
+    #[test]
+    fn test_compare_equal_with_alpha() {
+        const VERSION: &str = "1.0-alpha";
+        assert_equal(VERSION, VERSION);
+    }
+    #[test]
+    fn test_compare_equal_with_beta() {
+        const VERSION: &str = "1.0-beta";
+        assert_equal(VERSION, VERSION);
+    }
+    #[test]
+    fn test_compare_equal_with_rc_numbers() {
+        // like linux release versions
+        const VERSION: &str = "5.5-rc7";
+        assert_equal(VERSION, VERSION);
+    }
+    #[test]
+    fn test_compare_equal_with_debian_epoch() {
+        const VERSION: &str = "1:1.2.3";
+        assert_equal(VERSION, VERSION);
+    }
+    #[test]
+    fn test_not_equal_basic() {
+        const MAX: &str = "3";
+        const MIN: &str = "2";
+        assert_not_equal(MAX, MIN);
+    }
+    fn assert_not_equal(max: &str, min: &str){
+        assert_eq!(compare(max, min), Ordering::Greater);
+        assert_eq!(compare(min, max), Ordering::Less);
+    }
+    #[test]
+    fn test_not_equal_between_rc_version_and_release_version() {
+        // like linux release versions
+        const MAX: &str = "5.5";
+        const MIN: &str = "5.5-rc6";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_with_two_dots() {
+        const MAX: &str = "2.1";
+        const MIN: &str = "2.0";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_with_rc_numbers() {
+        // like linux release versions
+        const MAX: &str = "5.5-rc7";
+        const MIN: &str = "5.5-rc6";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_between_alpha_and_beta_versions() {
+        const MAX: &str = "5.5-beta";
+        const MIN: &str = "5.5-alpha";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_between_alpha_sub_versions() {
+        const MAX: &str = "5.5-alpha.10";
+        const MIN: &str = "5.5-alpha.2";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_between_rc_sub_versions() {
+        const MAX: &str = "5.5-rc.10";
+        const MIN: &str = "5.5-rc.2";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_between_minor_number_followed_by_letter() {
+        // like openssl versions
+        const MAX: &str = "1.0.2e";
+        const MIN: &str = "1.0.2d";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_between_minor_number_followed_by_letter_and_no_letter() {
+        // like openssl versions
+        const MAX: &str = "1.0.2a";
+        const MIN: &str = "1.0.2";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_between_beta_and_rc_versions() {
+        const MAX: &str = "1.0-rc1";
+        const MIN: &str = "1.0-beta";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_between_debian_epoch() {
+        const MAX: &str = "2:2";
+        const MIN: &str = "1:10";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_between_epoch_and_no_epoch() {
+        const MAX: &str = "1:0.1";
+        const MIN: &str = "1.2";
+        assert_not_equal(MAX, MIN);
+    }
+
 }
