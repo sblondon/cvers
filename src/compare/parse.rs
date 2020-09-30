@@ -1,4 +1,6 @@
-pub fn parse_raw_version(raw_version: &str) -> super::structs::Version{
+use super::structs::{Version, MainBlock, PrereleaseBlock};
+
+pub fn parse_raw_version(raw_version: &str) -> Version{
     let version_without_epoch: String;
     let mut epoch: Option<u8> = None;
     let splitted_epoch_and_tail: Vec<_> = raw_version.split(':').collect();
@@ -10,20 +12,20 @@ pub fn parse_raw_version(raw_version: &str) -> super::structs::Version{
     }
 
     let version_and_prerelease: Vec<_> = version_without_epoch.split('-').collect();
-    let main_block: super::structs::MainBlock = parse_main_block(version_and_prerelease[0].to_string());
-    let mut prerelease_block: Option<super::structs::PrereleaseBlock> = None;
+    let main_block: MainBlock = parse_main_block(version_and_prerelease[0].to_string());
+    let mut prerelease_block: Option<PrereleaseBlock> = None;
     if version_and_prerelease.len() == 2 {
         let raw_prerelease: String = version_and_prerelease[1].to_string();
         prerelease_block = Some(parse_prerelease(raw_prerelease));
     }
-    return super::structs::Version {
+    return Version {
         epoch: epoch,
         main: main_block,
         pre_release: prerelease_block,
     }
 }
 
-fn parse_main_block(raw_main_block: String) -> super::structs::MainBlock {
+fn parse_main_block(raw_main_block: String) -> MainBlock {
     let mut main_version_numbers: Vec<u32> = Vec::new();
     let mut post_main_letter: Option<char> = None;
     for element in raw_main_block.split('.'){
@@ -37,13 +39,13 @@ fn parse_main_block(raw_main_block: String) -> super::structs::MainBlock {
             main_version_numbers.push(element.parse().unwrap());
         }
     }
-    return super::structs::MainBlock {
+    return MainBlock {
         numbers: main_version_numbers,
         post_letter: post_main_letter,
     }
 }
 
-fn parse_prerelease(raw_prerelease: String) -> super::structs::PrereleaseBlock {
+fn parse_prerelease(raw_prerelease: String) -> PrereleaseBlock {
     let step: String;
     let mut post_number: Option<u8> = None;
     let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
@@ -56,7 +58,7 @@ fn parse_prerelease(raw_prerelease: String) -> super::structs::PrereleaseBlock {
     } else {
        step = raw_prerelease.parse().unwrap();
     }
-    return super::structs::PrereleaseBlock {
+    return PrereleaseBlock {
         step: step,
         post_number: post_number,
     }
