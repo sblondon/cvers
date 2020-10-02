@@ -18,7 +18,7 @@ pub fn parse_raw_version(raw_version: &str) -> Version{
         let raw_prerelease: String = version_and_prerelease[1].to_string();
         prerelease_block = Some(parse_prerelease(raw_prerelease));
     }
-    return Version {
+    Version {
         epoch: epoch,
         main: main_block,
         pre_release: prerelease_block,
@@ -39,7 +39,7 @@ fn parse_main_block(raw_main_block: String) -> MainBlock {
             main_version_numbers.push(element.parse().unwrap());
         }
     }
-    return MainBlock {
+    MainBlock {
         numbers: main_version_numbers,
         post_letter: post_main_letter,
     }
@@ -58,7 +58,7 @@ fn parse_prerelease(raw_prerelease: String) -> PrereleaseBlock {
     } else {
        step = raw_prerelease.parse().unwrap();
     }
-    return PrereleaseBlock {
+    PrereleaseBlock {
         step: step,
         post_number: post_number,
     }
