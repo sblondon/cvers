@@ -12,7 +12,6 @@ pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::cmp::Ordering;
 
     #[test]
     fn test_compare_compatible_with_tex_version() {
