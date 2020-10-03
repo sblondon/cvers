@@ -3,7 +3,7 @@ use super::structs::{Version, MainBlock, PrereleaseBlock};
 pub fn parse_raw_version(raw_version: &str) -> Version{
     let version_without_epoch: String;
     let mut epoch: Option<u8> = None;
-    let splitted_epoch_and_tail: Vec<_> = raw_version.split(':').collect();
+    let splitted_epoch_and_tail: Vec<&str> = split_str(raw_version, ':');
     if splitted_epoch_and_tail.len() == 2 {
         epoch = Some(splitted_epoch_and_tail[0].parse().unwrap());
         version_without_epoch = splitted_epoch_and_tail[1].to_string();
@@ -11,7 +11,7 @@ pub fn parse_raw_version(raw_version: &str) -> Version{
         version_without_epoch = splitted_epoch_and_tail[0].to_string();
     }
 
-    let version_and_prerelease: Vec<_> = version_without_epoch.split('-').collect();
+    let version_and_prerelease: Vec<&str> = split_str(version_without_epoch.as_str(), '-');
     let main_block: MainBlock = parse_main_block(version_and_prerelease[0].to_string());
     let mut prerelease_block: Option<PrereleaseBlock> = None;
     if version_and_prerelease.len() == 2 {
@@ -23,6 +23,10 @@ pub fn parse_raw_version(raw_version: &str) -> Version{
         main: main_block,
         pre_release: prerelease_block,
     }
+}
+
+fn split_str(s: &str, delimiter: char) -> Vec<&str> {
+    s.split(delimiter).collect()
 }
 
 fn parse_main_block(raw_main_block: String) -> MainBlock {
@@ -43,7 +47,6 @@ fn parse_main_block(raw_main_block: String) -> MainBlock {
     }
 }
 
-
 fn last_char_is_letter(s: &str) -> bool {
     ! s.chars().last().unwrap().is_digit(10)
 }
@@ -51,7 +54,7 @@ fn last_char_is_letter(s: &str) -> bool {
 fn parse_prerelease(raw_prerelease: String) -> PrereleaseBlock {
     let step: String;
     let mut post_number: Option<u8> = None;
-    let splitted_prerelease: Vec<_> = raw_prerelease.split('.').collect();
+    let splitted_prerelease: Vec<&str> = split_str(raw_prerelease.as_str(), '.');
     if splitted_prerelease.len() == 2 {
         step = splitted_prerelease[0].parse().unwrap();
         post_number = Some(splitted_prerelease[1].parse().unwrap());
