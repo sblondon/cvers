@@ -31,8 +31,7 @@ fn parse_main_block(raw_main_block: String) -> MainBlock {
     for element in raw_main_block.split('.'){
         let subversion: String = element.to_string();
         let index_without_last_char: usize = subversion.chars().count() - 1;
-        let last_char_is_letter: bool = ! element.chars().last().unwrap().is_digit(10);
-        if last_char_is_letter {
+        if last_char_is_letter(&element) {
             main_version_numbers.push(element[0..index_without_last_char].parse().unwrap());
             post_main_letter = subversion.chars().rev().next();
         } else {
@@ -43,6 +42,11 @@ fn parse_main_block(raw_main_block: String) -> MainBlock {
         numbers: main_version_numbers,
         post_letter: post_main_letter,
     }
+}
+
+
+fn last_char_is_letter(s: &str) -> bool {
+    ! s.chars().last().unwrap().is_digit(10)
 }
 
 fn parse_prerelease(raw_prerelease: String) -> PrereleaseBlock {
