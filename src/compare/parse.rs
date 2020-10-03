@@ -28,14 +28,13 @@ pub fn parse_raw_version(raw_version: &str) -> Version{
 fn parse_main_block(raw_main_block: String) -> MainBlock {
     let mut main_version_numbers: Vec<u32> = Vec::new();
     let mut post_main_letter: Option<char> = None;
-    for element in raw_main_block.split('.'){
-        let subversion: String = element.to_string();
-        if last_char_is_letter(&element) {
+    for subversion in raw_main_block.split('.'){
+        if last_char_is_letter(&subversion) {
             let index_without_last_char: usize = subversion.chars().count() - 1;
-            main_version_numbers.push(element[0..index_without_last_char].parse().unwrap());
+            main_version_numbers.push(subversion[0..index_without_last_char].parse().unwrap());
             post_main_letter = subversion.chars().rev().next();
         } else {
-            main_version_numbers.push(element.parse().unwrap());
+            main_version_numbers.push(subversion.parse().unwrap());
         }
     }
     MainBlock {
