@@ -32,7 +32,7 @@ fn parse_main_block(raw_main_block: String) -> MainBlock {
         if last_char_is_letter(&subversion) {
             let index_without_last_char: usize = subversion.chars().count() - 1;
             main_version_numbers.push(subversion[0..index_without_last_char].parse().unwrap());
-            post_main_letter = subversion.chars().rev().next();
+            post_main_letter = subversion.chars().last();
         } else {
             main_version_numbers.push(subversion.parse().unwrap());
         }
