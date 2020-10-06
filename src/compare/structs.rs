@@ -54,9 +54,7 @@ impl Ord for Version {
             [None, None] => Ordering::Equal,
             [Some(_), None] => Ordering::Less,
             [None, Some(_)] => Ordering::Greater,
-            [Some(_), Some(_)] => {
-               self.pre_release.cmp(&other.pre_release)
-            }
+            [Some(_), Some(_)] => self.pre_release.cmp(&other.pre_release),
         }
     }
 }
@@ -67,9 +65,7 @@ impl Version {
             [None, None] => Ordering::Equal,
             [Some(_), None] => Ordering::Greater,
             [None, Some(_)] => Ordering::Less,
-            [Some(_), Some(_)] => {
-                self.epoch.cmp(&other.epoch)
-            }
+            [Some(_), Some(_)] => self.epoch.cmp(&other.epoch),
         }
     }
 }
@@ -113,9 +109,7 @@ impl MainBlock {
             [None, None] => Ordering::Equal,
             [Some(_), None] => Ordering::Greater,
             [None, Some(_)] => Ordering::Less,
-            [Some(_), Some(_)] => {
-                self.post_letter.cmp(&other.post_letter)
-            }
+            [Some(_), Some(_)] => self.post_letter.cmp(&other.post_letter),
         }
     }
 }
@@ -138,9 +132,7 @@ impl PrereleaseBlock {
             [None, None] => Ordering::Equal,
             [Some(_), None] => Ordering::Greater,
             [None, Some(_)] => Ordering::Less,
-            [Some(_), Some(_)] => {
-                self.post_number.cmp(&other.post_number)
-            }
+            [Some(_), Some(_)] => self.post_number.cmp(&other.post_number)
         }
     }
 
@@ -148,9 +140,7 @@ impl PrereleaseBlock {
         match [self.step.len(), other.step.len()] {
             [0, x] if x > 0 => return Ordering::Greater,
             [x, 0] if x > 0 => return Ordering::Less,
-            _ => {
-                self.step.cmp(&other.step)
-            }
+            _ => self.step.cmp(&other.step),
         }
     }
 }
