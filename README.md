@@ -1,6 +1,8 @@
 # cvers
 Compare VERSion numbers
 
+Fonctionnement actuel :
+
 ```
 $ cvers 1.0 1.1
 <
