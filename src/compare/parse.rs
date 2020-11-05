@@ -1,4 +1,4 @@
-use super::structs::{Version, MainBlock, PrereleaseBlock};
+use super::structs::{Version, MainBlock, PrereleaseBlock, BuildBlock};
 
 pub fn parse_raw_version(raw_version: &str) -> Version{
     let version_without_epoch: &str;
@@ -11,17 +11,27 @@ pub fn parse_raw_version(raw_version: &str) -> Version{
         version_without_epoch = splitted_epoch_and_tail[0];
     }
 
-    let version_and_prerelease: Vec<&str> = split_str(&version_without_epoch, '-');
-    let main_block: MainBlock = parse_main_block(version_and_prerelease[0]);
     let mut prerelease_block: Option<PrereleaseBlock> = None;
+    let mut build_block: Option<BuildBlock> = None;
+    let version_and_prerelease: Vec<&str> = split_str(&version_without_epoch, '-');
+    let version_and_build: Vec<&str> = split_str(&version_without_epoch, '+');
+    let main_block: MainBlock;
     if version_and_prerelease.len() == 2 {
+        main_block = parse_main_block(version_and_prerelease[0]);
         let raw_prerelease: &str = version_and_prerelease[1];
         prerelease_block = Some(parse_prerelease(&raw_prerelease));
+    } else if version_and_build.len() == 2 {
+        main_block = parse_main_block(version_and_build[0]);
+        let raw_build: &str = version_and_build[1];
+        build_block = Some(parse_build(&raw_build));
+    } else {
+        main_block = parse_main_block(version_and_prerelease[0]);
     }
     Version {
         epoch: epoch,
         main: main_block,
         pre_release: prerelease_block,
+        build: build_block,
     }
 }
 
@@ -67,5 +77,11 @@ fn parse_prerelease(raw_prerelease: &str) -> PrereleaseBlock {
     PrereleaseBlock {
         step: step,
         post_number: post_number,
+    }
+}
+
+fn parse_build(raw_build: &str) -> BuildBlock {
+    BuildBlock {
+        number: raw_build.parse().unwrap(),
     }
 }

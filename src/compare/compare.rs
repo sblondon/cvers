@@ -55,6 +55,11 @@ mod tests {
         assert_equal(VERSION, VERSION);
     }
     #[test]
+    fn test_compare_equal_with_build_number() {
+        const VERSION: &str = "1.0+1";
+        assert_equal(VERSION, VERSION);
+    }
+    #[test]
     fn test_compare_equal_with_debian_epoch() {
         const VERSION: &str = "1:1.2.3";
         assert_equal(VERSION, VERSION);
@@ -87,6 +92,18 @@ mod tests {
         // like linux release versions
         const MAX: &str = "5.5-rc7";
         const MIN: &str = "5.5-rc6";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_between_build_number() {
+        const MAX: &str = "1.0+3";
+        const MIN: &str = "1.0+1";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_between_build_number_and_no_build() {
+        const MAX: &str = "1.0+3";
+        const MIN: &str = "1.0";
         assert_not_equal(MAX, MIN);
     }
     #[test]

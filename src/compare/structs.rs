@@ -6,6 +6,7 @@ pub struct Version {
     pub epoch: Option<u8>,
     pub main: MainBlock,
     pub pre_release: Option<PrereleaseBlock>,
+    pub build: Option<BuildBlock>,
 }
 
 #[derive(Eq)]
@@ -19,6 +20,12 @@ pub struct PrereleaseBlock {
     pub step: String,
     pub post_number: Option<u8>,
 }
+
+#[derive(Eq)]
+pub struct BuildBlock {
+    pub number: u8,
+}
+
 
 impl PartialOrd for Version {
     fn partial_cmp(&self, other: &Version) -> Option<Ordering> {
@@ -38,6 +45,24 @@ impl PartialOrd for PrereleaseBlock {
     }
 }
 
+impl PartialOrd for BuildBlock {
+    fn partial_cmp(&self, other: &BuildBlock) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for BuildBlock {
+    fn cmp(&self, other: &BuildBlock) -> Ordering {
+        self.number.cmp(&other.number)
+    }
+}
+
+impl PartialEq for BuildBlock {
+    fn eq(&self, other: &BuildBlock) -> bool {
+        self.number == other.number
+    }
+}
+
 impl Ord for Version {
     fn cmp(&self, other: &Version) -> Ordering {
         let epoch_order: Ordering = self.cmp_epoch(other);
@@ -50,11 +75,21 @@ impl Ord for Version {
             return main_order
         }
 
-        match [&self.pre_release, &other.pre_release] {
+        let prerelease_order: Ordering = match [&self.pre_release, &other.pre_release] {
             [None, None] => Ordering::Equal,
             [Some(_), None] => Ordering::Less,
             [None, Some(_)] => Ordering::Greater,
             [Some(_), Some(_)] => self.pre_release.cmp(&other.pre_release),
+        };
+        if prerelease_order != Ordering::Equal {
+            return prerelease_order
+        }
+
+        match [&self.build, &other.build] {
+            [None, None] => Ordering::Equal,
+            [Some(_), None] => Ordering::Greater,
+            [None, Some(_)] => Ordering::Less,
+            [Some(_), Some(_)] => self.build.cmp(&other.build),
         }
     }
 }
