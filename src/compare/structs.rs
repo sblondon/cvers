@@ -75,22 +75,12 @@ impl Ord for Version {
             return main_order
         }
 
-        let prerelease_order: Ordering = match [&self.pre_release, &other.pre_release] {
-            [None, None] => Ordering::Equal,
-            [Some(_), None] => Ordering::Less,
-            [None, Some(_)] => Ordering::Greater,
-            [Some(_), Some(_)] => self.pre_release.cmp(&other.pre_release),
-        };
+        let prerelease_order: Ordering = self.cmp_prerelease(&other);
         if prerelease_order != Ordering::Equal {
             return prerelease_order
         }
 
-        match [&self.build, &other.build] {
-            [None, None] => Ordering::Equal,
-            [Some(_), None] => Ordering::Greater,
-            [None, Some(_)] => Ordering::Less,
-            [Some(_), Some(_)] => self.build.cmp(&other.build),
-        }
+        self.cmp_build(&other)
     }
 }
 
@@ -101,6 +91,24 @@ impl Version {
             [Some(_), None] => Ordering::Greater,
             [None, Some(_)] => Ordering::Less,
             [Some(_), Some(_)] => self.epoch.cmp(&other.epoch),
+        }
+    }
+
+    fn cmp_prerelease(&self, other: &Version) -> Ordering {
+        match [&self.pre_release, &other.pre_release] {
+            [None, None] => Ordering::Equal,
+            [Some(_), None] => Ordering::Less,
+            [None, Some(_)] => Ordering::Greater,
+            [Some(_), Some(_)] => self.pre_release.cmp(&other.pre_release),
+        }
+    }
+
+    fn cmp_build(&self, other: &Version) -> Ordering {
+        match [&self.build, &other.build] {
+            [None, None] => Ordering::Equal,
+            [Some(_), None] => Ordering::Greater,
+            [None, Some(_)] => Ordering::Less,
+            [Some(_), Some(_)] => self.build.cmp(&other.build),
         }
     }
 }
