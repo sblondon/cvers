@@ -101,6 +101,12 @@ mod tests {
         assert_not_equal(MAX, MIN);
     }
     #[test]
+    fn test_not_equal_with_rc_numbers_between_build_number() {
+        const MAX: &str = "1.0-rc1+3";
+        const MIN: &str = "1.0-rc1+1";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
     fn test_not_equal_between_build_number_and_no_build() {
         const MAX: &str = "1.0+3";
         const MIN: &str = "1.0";
