@@ -13,7 +13,7 @@ pub fn parse_raw_version(raw_version: &str) -> Version{
 
     let mut prerelease_block: Option<PrereleaseBlock> = None;
     let mut build_block: Option<BuildBlock> = None;
-    let (version, raw_prerelease, raw_build): (&str, &str, &str) = split_str_3_parts(&version_without_epoch, '-', '+');
+    let (version, raw_prerelease, raw_build): (&str, &str, &str) = split_str_3_parts(&version_without_epoch);
     let main_block: MainBlock = parse_main_block(version);
     if raw_prerelease.len() > 0 {
         prerelease_block = Some(parse_prerelease(&raw_prerelease));
@@ -38,13 +38,13 @@ fn split_str(s: &str, delimiter: char) -> (&str, &str) {
     }
 }
 
-fn split_str_3_parts(s: &str, delimiter_1: char, delimiter_2: char) -> (&str, &str, &str) {
-    let (part_1, part_2): (&str, &str) = split_str(s, delimiter_1);
+fn split_str_3_parts(s: &str) -> (&str, &str, &str) {
+    let (part_1, part_2): (&str, &str) = split_str(s, '-');
     if part_2.len() == 0 {
-        let (subpart_1, subpart_2): (&str, &str) = split_str(part_1, delimiter_2);
+        let (subpart_1, subpart_2): (&str, &str) = split_str(part_1, '+');
         (subpart_1, "", subpart_2)
     } else {
-        let (subpart_1, subpart_2): (&str, &str) = split_str(part_2, delimiter_2);
+        let (subpart_1, subpart_2): (&str, &str) = split_str(part_2, '+');
         (part_1, subpart_1, subpart_2)
     }
 }
