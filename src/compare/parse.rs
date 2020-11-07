@@ -17,39 +17,39 @@ pub fn parse_raw_version(raw_version: &str) -> Version{
 }
 
 fn parse_epoch(raw_epoch: &str) -> Option<u8> {
-    if raw_epoch == "" {
-        return None
+    match raw_epoch {
+        "" => None,
+        _ => Some(raw_epoch.parse().unwrap()),
     }
-
-    Some(raw_epoch.parse().unwrap())
 }
 
 fn split_epoch(s: &str) -> (&str, &str) {
     let splitted: Vec<&str> = s.split(":").collect();
-    if splitted.len() == 2 {
-        (splitted[0], splitted[1])
-    } else {
-        ("", splitted[0])
+    match splitted.len() {
+        2 => (splitted[0], splitted[1]),
+        _ => ("", splitted[0]),
     }
 }
 
 fn split_str(s: &str, delimiter: char) -> (&str, &str) {
     let splitted: Vec<&str> = s.split(delimiter).collect();
-    if splitted.len() == 2 {
-        (splitted[0], splitted[1])
-    } else {
-        (splitted[0], "")
+    match splitted.len() {
+        2 => (splitted[0], splitted[1]),
+        _ => (splitted[0], ""),
     }
 }
 
 fn split_version_prerelease_build(s: &str) -> (&str, &str, &str) {
     let (part_1, part_2): (&str, &str) = split_str(s, '-');
-    if part_2.len() == 0 {
-        let (subpart_1, subpart_2): (&str, &str) = split_str(part_1, '+');
-        (subpart_1, "", subpart_2)
-    } else {
-        let (subpart_1, subpart_2): (&str, &str) = split_str(part_2, '+');
-        (part_1, subpart_1, subpart_2)
+    match part_2.len() {
+        0 => {
+            let (subpart_1, subpart_2): (&str, &str) = split_str(part_1, '+');
+            (subpart_1, "", subpart_2)
+        },
+        _ => {
+            let (subpart_1, subpart_2): (&str, &str) = split_str(part_2, '+');
+            (part_1, subpart_1, subpart_2)
+        },
     }
 }
 
@@ -99,11 +99,10 @@ fn parse_prerelease(raw_prerelease: &str) -> Option<PrereleaseBlock> {
 }
 
 fn parse_build(raw_build: &str) -> Option<BuildBlock> {
-    if raw_build == "" {
-        return None
+    match raw_build {
+        "" => None,
+        _ => Some(BuildBlock {
+            number: raw_build.parse().unwrap(),
+        })
     }
-
-    Some(BuildBlock {
-        number: raw_build.parse().unwrap(),
-    })
 }
