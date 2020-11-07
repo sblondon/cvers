@@ -11,16 +11,10 @@ pub fn parse_raw_version(raw_version: &str) -> Version{
         version_without_epoch = raw_epoch;
     }
 
-    let mut prerelease_block: Option<PrereleaseBlock> = None;
-    let mut build_block: Option<BuildBlock> = None;
     let (raw_main, raw_prerelease, raw_build): (&str, &str, &str) = split_version_prerelease_build(&version_without_epoch);
     let main_block: MainBlock = parse_main(raw_main);
-    if raw_prerelease.len() > 0 {
-        prerelease_block = Some(parse_prerelease(&raw_prerelease));
-    }
-    if raw_build.len() > 0 {
-        build_block = Some(parse_build(&raw_build));
-    }
+    let prerelease_block: Option<PrereleaseBlock> = parse_prerelease(&raw_prerelease);
+    let build_block: Option<BuildBlock> = parse_build(&raw_build);
     Version {
         epoch: epoch,
         main: main_block,
@@ -71,7 +65,11 @@ fn last_char_is_letter(s: &str) -> bool {
     ! s.chars().last().unwrap().is_digit(10)
 }
 
-fn parse_prerelease(raw_prerelease: &str) -> PrereleaseBlock {
+fn parse_prerelease(raw_prerelease: &str) -> Option<PrereleaseBlock> {
+    if raw_prerelease == "" {
+        return None
+    }
+
     let step: String;
     let mut post_number: Option<u8> = None;
     let (raw_step, raw_number): (&str, &str) = split_str(raw_prerelease, '.');
@@ -84,14 +82,18 @@ fn parse_prerelease(raw_prerelease: &str) -> PrereleaseBlock {
     } else {
        step = raw_prerelease.parse().unwrap();
     }
-    PrereleaseBlock {
+    Some(PrereleaseBlock {
         step: step,
         post_number: post_number,
-    }
+    })
 }
 
-fn parse_build(raw_build: &str) -> BuildBlock {
-    BuildBlock {
-        number: raw_build.parse().unwrap(),
+fn parse_build(raw_build: &str) -> Option<BuildBlock> {
+    if raw_build == "" {
+        return None
     }
+
+    Some(BuildBlock {
+        number: raw_build.parse().unwrap(),
+    })
 }
