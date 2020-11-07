@@ -1,10 +1,10 @@
 use super::structs::{Version, MainBlock, PrereleaseBlock, BuildBlock};
 
 pub fn parse_raw_version(raw_version: &str) -> Version{
-    let (raw_epoch, version_without_epoch): (&str, &str) = split_epoch(raw_version);
+    let (raw_epoch, raw_tail): (&str, &str) = split_epoch(raw_version);
     let epoch: Option<u8> = parse_epoch(raw_epoch);
 
-    let (raw_main, raw_prerelease, raw_build): (&str, &str, &str) = split_version_prerelease_build(&version_without_epoch);
+    let (raw_main, raw_prerelease, raw_build): (&str, &str, &str) = split_version_prerelease_build(&raw_tail);
     let main_block: MainBlock = parse_main(raw_main);
     let prerelease_block: Option<PrereleaseBlock> = parse_prerelease(&raw_prerelease);
     let build_block: Option<BuildBlock> = parse_build(&raw_build);
