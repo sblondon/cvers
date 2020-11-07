@@ -13,8 +13,8 @@ pub fn parse_raw_version(raw_version: &str) -> Version{
 
     let mut prerelease_block: Option<PrereleaseBlock> = None;
     let mut build_block: Option<BuildBlock> = None;
-    let (raw_version, raw_prerelease, raw_build): (&str, &str, &str) = split_version_prerelease_build_str_parts(&version_without_epoch);
-    let main_block: MainBlock = parse_main_block(raw_version);
+    let (raw_main, raw_prerelease, raw_build): (&str, &str, &str) = split_version_prerelease_build(&version_without_epoch);
+    let main_block: MainBlock = parse_main(raw_main);
     if raw_prerelease.len() > 0 {
         prerelease_block = Some(parse_prerelease(&raw_prerelease));
     }
@@ -38,7 +38,7 @@ fn split_str(s: &str, delimiter: char) -> (&str, &str) {
     }
 }
 
-fn split_version_prerelease_build_str_parts(s: &str) -> (&str, &str, &str) {
+fn split_version_prerelease_build(s: &str) -> (&str, &str, &str) {
     let (part_1, part_2): (&str, &str) = split_str(s, '-');
     if part_2.len() == 0 {
         let (subpart_1, subpart_2): (&str, &str) = split_str(part_1, '+');
@@ -49,7 +49,7 @@ fn split_version_prerelease_build_str_parts(s: &str) -> (&str, &str, &str) {
     }
 }
 
-fn parse_main_block(raw_main_block: &str) -> MainBlock {
+fn parse_main(raw_main_block: &str) -> MainBlock {
     let mut main_version_numbers: Vec<u32> = Vec::new();
     let mut post_main_letter: Option<char> = None;
     for subversion in raw_main_block.split('.'){
