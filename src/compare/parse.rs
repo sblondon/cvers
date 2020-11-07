@@ -1,15 +1,8 @@
 use super::structs::{Version, MainBlock, PrereleaseBlock, BuildBlock};
 
 pub fn parse_raw_version(raw_version: &str) -> Version{
-    let version_without_epoch: &str;
-    let mut epoch: Option<u8> = None;
-    let (raw_epoch, tail): (&str, &str) = split_str(raw_version, ':');
-    if tail.len() > 0 {
-        epoch = Some(raw_epoch.parse().unwrap());
-        version_without_epoch = tail;
-    } else {
-        version_without_epoch = raw_epoch;
-    }
+    let (raw_epoch, version_without_epoch): (&str, &str) = split_epoch(raw_version);
+    let epoch: Option<u8> = parse_epoch(raw_epoch);
 
     let (raw_main, raw_prerelease, raw_build): (&str, &str, &str) = split_version_prerelease_build(&version_without_epoch);
     let main_block: MainBlock = parse_main(raw_main);
@@ -20,6 +13,23 @@ pub fn parse_raw_version(raw_version: &str) -> Version{
         main: main_block,
         pre_release: prerelease_block,
         build: build_block,
+    }
+}
+
+fn parse_epoch(raw_epoch: &str) -> Option<u8> {
+    if raw_epoch == "" {
+        return None
+    }
+
+    Some(raw_epoch.parse().unwrap())
+}
+
+fn split_epoch(s: &str) -> (&str, &str) {
+    let splitted: Vec<&str> = s.split(":").collect();
+    if splitted.len() == 2 {
+        (splitted[0], splitted[1])
+    } else {
+        ("", splitted[0])
     }
 }
 
