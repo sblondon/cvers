@@ -26,16 +26,16 @@ fn parse_epoch(raw_epoch: &str) -> Option<u8> {
 fn split_epoch(s: &str) -> (&str, &str) {
     let splitted: Vec<&str> = s.split(":").collect();
     match splitted.len() {
-        2 => (splitted[0], splitted[1]),
-        _ => ("", splitted[0]),
+        1 => ("", splitted[0]),
+        _ => (splitted[0], splitted[1]),
     }
 }
 
 fn split_str(s: &str, delimiter: char) -> (&str, &str) {
     let splitted: Vec<&str> = s.split(delimiter).collect();
     match splitted.len() {
-        2 => (splitted[0], splitted[1]),
-        _ => (splitted[0], ""),
+        1 => (splitted[0], ""),
+        _ => (splitted[0], splitted[1]),
     }
 }
 
