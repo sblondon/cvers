@@ -27,7 +27,8 @@ fn split_epoch(s: &str) -> (&str, &str) {
     let splitted: Vec<&str> = s.split(":").collect();
     match splitted.len() {
         1 => ("", splitted[0]),
-        _ => (splitted[0], splitted[1]),
+        2 => (splitted[0], splitted[1]),
+        _ => panic!("Error: more than one ':' character for epoch "),
     }
 }
 
@@ -35,7 +36,8 @@ fn split_str(s: &str, delimiter: char) -> (&str, &str) {
     let splitted: Vec<&str> = s.split(delimiter).collect();
     match splitted.len() {
         1 => (splitted[0], ""),
-        _ => (splitted[0], splitted[1]),
+        2 => (splitted[0], splitted[1]),
+        _ => panic!("Error: more than one '{}' character", delimiter),
     }
 }
 
