@@ -1,7 +1,7 @@
 use super::structs::{Version, MainBlock, PrereleaseBlock, BuildBlock};
 
 pub fn parse_raw_version(raw_version: &str) -> Version{
-    let (raw_epoch, raw_tail): (&str, &str) = split_epoch(raw_version);
+    let (raw_epoch, raw_tail): (&str, &str) = split_epoch_tail(raw_version);
     let epoch: Option<u8> = parse_epoch(raw_epoch);
 
     let (raw_main, raw_prerelease, raw_build): (&str, &str, &str) = split_version_prerelease_build(&raw_tail);
@@ -23,7 +23,7 @@ fn parse_epoch(raw_epoch: &str) -> Option<u8> {
     }
 }
 
-fn split_epoch(s: &str) -> (&str, &str) {
+fn split_epoch_tail(s: &str) -> (&str, &str) {
     let splitted: Vec<&str> = s.split(":").collect();
     match splitted.len() {
         1 => ("", splitted[0]),
