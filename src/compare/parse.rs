@@ -24,7 +24,7 @@ fn parse_epoch(raw_epoch: &str) -> Option<u8> {
 }
 
 fn split_epoch_tail(s: &str) -> (&str, &str) {
-    let splitted: Vec<&str> = s.split(":").collect();
+    let splitted: Vec<&str> = s.split(':').collect();
     match splitted.len() {
         1 => ("", splitted[0]),
         2 => (splitted[0], splitted[1]),
