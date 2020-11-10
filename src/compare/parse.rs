@@ -1,3 +1,4 @@
+use std::process;
 use super::structs::{Version, MainBlock, PrereleaseBlock, BuildBlock};
 
 pub fn parse_raw_version(raw_version: &str) -> Version{
@@ -28,7 +29,7 @@ fn split_epoch_tail(s: &str) -> (&str, &str) {
     match splitted.len() {
         1 => ("", splitted[0]),
         2 => (splitted[0], splitted[1]),
-        _ => panic!("Error: more than one ':' character for epoch "),
+        _ => parsing_error("Error: more than one ':' character for epoch "),
     }
 }
 
@@ -37,8 +38,19 @@ fn split_str(s: &str, delimiter: char) -> (&str, &str) {
     match splitted.len() {
         1 => (splitted[0], ""),
         2 => (splitted[0], splitted[1]),
-        _ => panic!("Error: more than one '{}' character", delimiter),
+        _ => {
+            let message = format!(
+                "Error: more than one '{}' character",
+                delimiter.to_string()
+            ).as_str().to_owned();
+            parsing_error(&message);
+        },
     }
+}
+
+fn parsing_error(message: &str) -> ! {
+        eprintln!("{}", message);
+        process::exit(100);
 }
 
 fn split_version_prerelease_build(s: &str) -> (&str, &str, &str) {
