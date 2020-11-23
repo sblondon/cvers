@@ -72,8 +72,10 @@ fn parse_main(raw_main_block: &str) -> MainBlock {
     let mut post_main_letter: Option<char> = None;
     for subversion in raw_main_block.split('.'){
         if last_char_is_letter(&subversion) {
-            let index_without_last_char: usize = subversion.chars().count() - 1;
-            main_version_numbers.push(subversion[0..index_without_last_char].parse().unwrap());
+            if subversion.chars().count() > 1 {
+                let index_without_last_char: usize = subversion.chars().count() - 1;
+                main_version_numbers.push(subversion[0..index_without_last_char].parse().unwrap());
+            }
             post_main_letter = subversion.chars().last();
         } else {
             main_version_numbers.push(subversion.parse().unwrap());

@@ -145,6 +145,14 @@ mod tests {
         assert_not_equal(MAX, MIN);
     }
     #[test]
+    fn test_not_equal_between_minor_letter() {
+        // like raku langage specifications
+        const MAX: &str = "6.d";
+        const MIN: &str = "6.c";
+        assert_not_equal(MAX, MIN);
+    }
+
+    #[test]
     fn test_not_equal_between_beta_and_rc_versions() {
         const MAX: &str = "1.0-rc1";
         const MIN: &str = "1.0-beta";
