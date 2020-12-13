@@ -12,16 +12,20 @@ fn main() {
         errors::exit_on_error("Invalid parameters");
     }
 
-    let verb = &args[1];
-    if verb == "compare" {
-        main_compare(&args[2], &args[3]);
-    } else if verb == "assert" {
-        process::exit(
-            main_assert(&args[2], &args[4], &args[3])
-        );
-    } else {
-        let error_message = format!("Invalid verb '{}'. Use 'compare' or 'assert'.", verb);
-        errors::exit_on_error(error_message.as_str());
+    let verb = args[1].as_str();
+    match verb {
+        "compare" => {
+            main_compare(&args[2], &args[3]);
+        },
+        "assert" => {
+            process::exit(
+                main_assert(&args[2], &args[4], &args[3])
+            );
+        },
+        _ => {
+            let error_message = format!("Invalid verb '{}'. Use 'compare' or 'assert'.", verb);
+            errors::exit_on_error(error_message.as_str());
+        }
     }
 }
 
