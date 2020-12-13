@@ -3,13 +3,13 @@ use std::process;
 
 mod compare;
 mod display;
+mod errors;
 
 
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 4 {
-        eprintln!("Invalid parameters");
-        process::exit(1);
+        errors::exit_on_error("Invalid parameters");
     }
 
     let verb = &args[1];
@@ -20,8 +20,8 @@ fn main() {
             main_assert(&args[2], &args[4], &args[3])
         );
     } else {
-        eprintln!("Invalid verb '{}'. Use 'compare' or 'assert'.", verb);
-        process::exit(2);
+        let error_message = format!("Invalid verb '{}'. Use 'compare' or 'assert'.", verb);
+        errors::exit_on_error(error_message.as_str());
     }
 }
 
