@@ -11,8 +11,10 @@ fn main() {
         process::exit(1);
     }
 
-    let version_a = &args[1];
-    let version_b = &args[2];
+    main_compare(&args[1], &args[2]);
+}
+
+fn main_compare(version_a: &str, version_b: &str) {
     println!("{}", display::display(
             compare::compare(version_a, version_b)
         )
