@@ -20,6 +20,7 @@ pas de sortie, valeur de retour 0 (assertion vraie) ou 1 (assertion fausse)
 
 opérateurs de comparaison : '<<', '<=', '==', '>=', '>>'
 
+comparable à `dpkg --compare-versions`
 
 
 autre nom possible :
