@@ -1,6 +1,13 @@
 use std::cmp::Ordering;
 
 
+pub fn compare_with_operator(raw_version_a: &str, raw_version_b: &str, raw_operator: &str)-> bool{
+    let order = compare(raw_version_a, raw_version_b);
+    return (order == Ordering::Less && (raw_operator == "<<" || raw_operator == "<=")) ||
+        (order == Ordering::Greater && (raw_operator == ">>" || raw_operator == "=>")) ||
+        (order == Ordering::Equal && (raw_operator == "<=" || raw_operator == "==" || raw_operator == "=>"))
+}
+
 pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
     let version_a: super::structs::Version = super::parse::parse_raw_version(raw_version_a);
     let version_b: super::structs::Version = super::parse::parse_raw_version(raw_version_b);
@@ -169,6 +176,32 @@ mod tests {
         const MAX: &str = "1:0.1";
         const MIN: &str = "1.2";
         assert_not_equal(MAX, MIN);
+    }
+
+    #[test]
+    fn test_match_operator_for_different_versions() {
+        const MAX: &str = "2";
+        const MIN: &str = "1";
+
+        assert!(compare_with_operator(MIN, MAX, "<<"));
+        assert!(compare_with_operator(MIN, MAX, "<="));
+        assert_eq!(compare_with_operator(MIN, MAX, "=="), false);
+        assert!(compare_with_operator(MAX, MIN, "=>"));
+        assert!(compare_with_operator(MAX, MIN, ">>"));
+        assert_eq!(compare_with_operator(MAX, MIN, "<<"), false);
+        assert_eq!(compare_with_operator(MAX, MIN, "<="), false);
+        assert_eq!(compare_with_operator(MIN, MAX, "=>"), false);
+        assert_eq!(compare_with_operator(MIN, MAX, ">>"), false);
+    }
+    #[test]
+    fn test_match_operator_for_same_version() {
+        const VERSION: &str = "2";
+
+        assert_eq!(compare_with_operator(VERSION, VERSION, "<<"), false);
+        assert!(compare_with_operator(VERSION, VERSION, "<="));
+        assert!(compare_with_operator(VERSION, VERSION, "=="));
+        assert!(compare_with_operator(VERSION, VERSION, "=>"));
+        assert_eq!(compare_with_operator(VERSION, VERSION, ">>"), false);
     }
 
 }
