@@ -4,26 +4,25 @@ Compare VERSion numbers
 Fonctionnement actuel :
 
 ```
-$ cvers 1.0 1.1
+$ cvers compare 1.0 1.1
 <
 ```
 
-résultat possible :  <, =,  >
-                    -1, 0, 1
+sortie possible (sur la sortie standard) :  <, =,  >
 
 
-
-vnum : Version NUMbers (ou juste `vn`?)
 
 ```
-$ vnum --compare '1.0' '<' '1.1'
-1
+$ cvers assert '1.1' '<<' '1.2'
 ```
 
---exit-value option
+pas de sortie, valeur de retour 0 (assertion vraie) ou 1 (assertion fausse)
 
-```
-$ vnum compare '1.0' '1.1'
+opérateurs de comparaison : '<<', '<=', '==', '>=', '>>'
 
-$ vnum eval '1.1' '<' '1.2' --exit-value
-```
+
+
+autre nom possible :
+ - vnum pour Version NUMbers
+ - vrsns
+ - versn
