@@ -20,7 +20,7 @@ fn main() {
             main_assert(&args[2], &args[4], &args[3])
         );
     } else {
-        eprintln!("Invalid verb");
+        eprintln!("Invalid verb '{}'. Use 'compare' or 'assert'.", verb);
         process::exit(2);
     }
 }
