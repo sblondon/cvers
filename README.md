@@ -1,26 +1,49 @@
 # cvers
 Compare VERSion numbers
 
-Fonctionnement actuel :
+Two ways to call `cvers`:
+
+```
+$ cvers compare version_a version_b
+$ cvers assert version_a operator version_b
+```
+
+Every parameters are mandatory.
+
+
+compare
+-------
 
 ```
 $ cvers compare 1.0 1.1
 <
 ```
 
-sortie possible (sur la sortie standard) :  <, =,  >
+print the result on standard output.
+3 characters can be displayed:
+ - `<`
+ - `=`
+ - `>`
 
 
+assert
+------
 
 ```
 $ cvers assert '1.1' '<<' '1.2'
 ```
 
-pas de sortie, valeur de retour 0 (assertion vraie) ou 1 (assertion fausse)
+There are no output.
+The exit value are 0 (if assert is true) or 1 (if assert is false).
 
-opérateurs de comparaison : '<<', '<=', '==', '>=', '>>'
+Accepted operators are:
+ - `<<`: strictly less
+ - `<=`: less or equal
+ - `==`: equal
+ - `>=`: greater or equal
+ - `>>`: strictly greater
 
-comparable à `dpkg --compare-versions`
+The behaviour is equivalent to `dpkg --compare-versions`.
 
 
 autre nom possible :
