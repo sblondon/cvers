@@ -48,6 +48,20 @@ Accepted operators are:
 The behaviour is equivalent to `dpkg --compare-versions`.
 
 
+UseCase
+
+```sh
+if cvers assert "$current_version" "<<" "3.9.2"
+    then
+        /usr/sbin/logrotate /path/to/file.conf
+    else
+        # 3.9.2 introduce -l for logging
+        /usr/sbin/logrotate /path/to/file.conf -l "/path/to/log/dir"
+    fi
+```
+
+
+
 autre nom possible :
  - vnum pour Version NUMbers
  - vrsns
