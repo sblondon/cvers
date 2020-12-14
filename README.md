@@ -21,9 +21,9 @@ $ cvers compare 1.0 1.1
 
 print the result on standard output.
 3 characters can be displayed:
- - `<`
- - `=`
- - `>`
+ - `<`: version_a is lesser than version_b
+ - `=`: version_a equals version_b
+ - `>`: version_a is greater than version_b
 
 
 assert
@@ -31,6 +31,8 @@ assert
 
 ```
 $ cvers assert '1.1' '<<' '1.2'
+$ echo $?
+0
 ```
 
 There are no output.
