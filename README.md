@@ -51,13 +51,14 @@ The behaviour is equivalent to `dpkg --compare-versions`.
 UseCase
 
 ```sh
+current_version=$(/usr/sbin/logrotate 2>&1 | head -n 1 | cut -d' ' -f 2)
 if cvers assert "$current_version" "<<" "3.9.2"
-    then
-        /usr/sbin/logrotate /path/to/file.conf
-    else
-        # 3.9.2 introduce -l for logging
-        /usr/sbin/logrotate /path/to/file.conf -l "/path/to/log/dir"
-    fi
+then
+    /usr/sbin/logrotate /path/to/file.conf
+else
+    # 3.9.2 introduce -l for logging
+    /usr/sbin/logrotate /path/to/file.conf -l "/path/to/log/dir"
+fi
 ```
 
 
