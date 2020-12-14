@@ -41,9 +41,10 @@ mod tests {
     }
     #[test]
     fn test_compare_equal_with_different_dots_quantity() {
-        const FIRST: &str = "2.0";
-        const SECOND: &str = "2.0";
+        const FIRST: &str = "2";
+        const SECOND: &str = "2.0.0";
         assert_equal(FIRST, SECOND);
+        assert_equal(SECOND, FIRST);
     }
     #[test]
     fn test_compare_equal_with_alpha() {

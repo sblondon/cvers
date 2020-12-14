@@ -1,3 +1,4 @@
+use std::cmp::max;
 use std::cmp::Ordering;
 
 
@@ -144,7 +145,25 @@ impl Ord for MainBlock {
 
 impl MainBlock {
     fn cmp_numbers(&self, other: &MainBlock) -> Ordering {
-        self.numbers.cmp(&other.numbers)
+       let default_number: u32 = 0;
+       let max_size = max(self.numbers.len(), other.numbers.len());
+       for index in 0..max_size {
+           let mut self_number = default_number;
+           let mut other_number = default_number;
+           if self.numbers.len() > index {
+               self_number = self.numbers[index];
+           }
+           if other.numbers.len() > index {
+               other_number = other.numbers[index];
+           }
+
+           if self_number > other_number {
+              return Ordering::Greater
+           } else if self_number < other_number {
+              return Ordering::Less
+           }
+       }
+       Ordering::Equal
     }
 
     fn cmp_post_letter(&self, other: &MainBlock) -> Ordering {
