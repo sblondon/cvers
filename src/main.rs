@@ -21,8 +21,8 @@ fn main() {
         },
         "assert" => {
             let operator = &args[3];
-            let set: HashSet<&'static str> = ["<<", "<=", "==", "=>", ">>"].iter().cloned().collect();
-            if ! set.contains(&operator.as_str()) {
+            let operators: HashSet<&'static str> = ["<<", "<=", "==", "=>", ">>"].iter().cloned().collect();
+            if ! operators.contains(&operator.as_str()) {
                 let error_message = format!("Invalid operator '{}'.", operator);
                 errors::exit_on_error(error_message.as_str());
             } else {
