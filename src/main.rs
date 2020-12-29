@@ -1,6 +1,8 @@
 use std::env;
 use std::process;
 
+use std::collections::HashSet;
+
 mod compare;
 mod display;
 mod errors;
@@ -18,9 +20,16 @@ fn main() {
             main_compare(&args[2], &args[3]);
         },
         "assert" => {
-            process::exit(
-                main_assert(&args[2], &args[4], &args[3])
-            );
+            let operator = &args[3];
+            let set: HashSet<&'static str> = ["<<", "<=", "==", "=>", ">>"].iter().cloned().collect();
+            if ! set.contains(&operator.as_str()) {
+                let error_message = format!("Invalid operator '{}'.", operator);
+                errors::exit_on_error(error_message.as_str());
+            } else {
+                process::exit(
+                    main_assert(&args[2], &args[4], operator)
+                );
+            }
         },
         _ => {
             let error_message = format!("Invalid verb '{}'. Use 'compare' or 'assert'.", verb);
