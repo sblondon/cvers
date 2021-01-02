@@ -36,7 +36,7 @@ mod tests {
     }
     #[test]
     fn test_compare_equal_with_two_dots() {
-        const VERSION: &str = "2.0";
+        const VERSION: &str = "2.0.0";
         assert_equal(VERSION, VERSION);
     }
     #[test]
