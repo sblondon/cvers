@@ -96,10 +96,15 @@ mod tests {
         assert_not_equal(MAX, MIN);
     }
     #[test]
-    fn test_not_equal_with_rc_numbers() {
-        // like linux release versions
+    fn test_not_equal_with_rc_numbers_as_linux_versionning_scheme() {
         const MAX: &str = "5.5-rc7";
         const MIN: &str = "5.5-rc6";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
+    fn test_not_equal_with_rc_numbers_as_linux_versionning_scheme_with_10_value() {
+        const MAX: &str = "3.1-rc10";
+        const MIN: &str = "3.1-rc9";
         assert_not_equal(MAX, MIN);
     }
     #[test]
