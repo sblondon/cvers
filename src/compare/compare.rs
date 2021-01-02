@@ -167,6 +167,12 @@ mod tests {
         assert_not_equal(MAX, MIN);
     }
     #[test]
+    fn test_not_equal_between_alpha_and_released_versions() {
+        const MAX: &str = "5.5";
+        const MIN: &str = "5.5-alpha";
+        assert_not_equal(MAX, MIN);
+    }
+    #[test]
     fn test_not_equal_between_debian_epoch() {
         const MAX: &str = "2:2";
         const MIN: &str = "1:10";
