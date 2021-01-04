@@ -20,6 +20,7 @@ pub struct MainBlock {
 pub struct PrereleaseBlock {
     pub step: String,
     pub post_number: Option<u8>,
+    pub post_step: Option<String>,
 }
 
 #[derive(Eq)]
@@ -128,7 +129,8 @@ impl PartialEq for MainBlock {
 
 impl PartialEq for PrereleaseBlock {
     fn eq(&self, other: &PrereleaseBlock) -> bool {
-        self.step == other.step && self.post_number == other.post_number
+        self.step == other.step && self.post_number == other.post_number \
+            && self.post_step == other.post_step
     }
 }
 
@@ -184,11 +186,25 @@ impl Ord for PrereleaseBlock {
             return order
         }
 
+        let order: Ordering = self.cmp_post_step(other);
+        if order != Ordering::Equal {
+            return order
+        }
+
         return self.cmp_post_number(other);
     }
 }
 
 impl PrereleaseBlock {
+    fn cmp_post_step(&self, other: &PrereleaseBlock) -> Ordering {
+        match [&self.post_step, &other.post_step] {
+            [None, None] => Ordering::Equal,
+            [Some(_), None] => Ordering::Greater,
+            [None, Some(_)] => Ordering::Less,
+            [Some(_), Some(_)] => self.post_step.cmp(&other.post_step)
+        }
+    }
+
     fn cmp_post_number(&self, other: &PrereleaseBlock) -> Ordering {
         match [self.post_number, other.post_number] {
             [None, None] => Ordering::Equal,

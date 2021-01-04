@@ -73,6 +73,11 @@ mod tests {
         assert_equal(VERSION, VERSION);
     }
     #[test]
+    fn test_equal_between_alpha_and_beta_sub_version() {
+        const VERSION: &str = "1.0.0-alpha.beta";
+        assert_equal(VERSION, VERSION);
+    }
+    #[test]
     fn test_not_equal_basic() {
         const MAX: &str = "3";
         const MIN: &str = "2";
@@ -143,6 +148,12 @@ mod tests {
         const MIN: &str = "5.5-rc.2";
         assert_not_equal(MAX, MIN);
     }
+    #[test]
+    fn test_not_equal_between_alpha_and_beta_sub_version() {
+        const MAX: &str = "1.0.0-alpha.beta";
+        const MIN: &str = "1.0.0-alpha.1";
+        assert_not_equal(MAX, MIN);
+     }
     #[test]
     fn test_not_equal_between_minor_number_followed_by_letter() {
         // like openssl versions

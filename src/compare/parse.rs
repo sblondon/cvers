@@ -93,10 +93,15 @@ fn parse_prerelease(raw_prerelease: &str) -> Option<PrereleaseBlock> {
 
     let step: String;
     let mut post_number: Option<u8> = None;
+    let mut post_step: Option<String> = None;
     let (raw_step, raw_second_elem): (&str, &str) = split_str(raw_prerelease, '.');
     if raw_second_elem.len() > 0 {
         step = raw_step.parse().unwrap();
-        post_number = Some(raw_second_elem.parse().unwrap());
+        if raw_second_elem.chars().nth(0).unwrap().is_digit(10) {
+            post_number = Some(raw_second_elem.parse().unwrap());
+        } else {
+            post_step = Some(raw_second_elem.parse().unwrap());
+        }
     } else if raw_prerelease.len() > 2 && raw_prerelease[..2] == "rc".to_string() {
         step = "rc".to_string();
         post_number = Some(raw_prerelease[2..].parse().unwrap());
@@ -106,6 +111,7 @@ fn parse_prerelease(raw_prerelease: &str) -> Option<PrereleaseBlock> {
     Some(PrereleaseBlock {
         step: step,
         post_number: post_number,
+        post_step: post_step,
     })
 }
 
