@@ -93,10 +93,10 @@ fn parse_prerelease(raw_prerelease: &str) -> Option<PrereleaseBlock> {
 
     let step: String;
     let mut post_number: Option<u8> = None;
-    let (raw_step, raw_number): (&str, &str) = split_str(raw_prerelease, '.');
-    if raw_number.len() > 0 {
+    let (raw_step, raw_second_elem): (&str, &str) = split_str(raw_prerelease, '.');
+    if raw_second_elem.len() > 0 {
         step = raw_step.parse().unwrap();
-        post_number = Some(raw_number.parse().unwrap());
+        post_number = Some(raw_second_elem.parse().unwrap());
     } else if raw_prerelease.len() > 2 && raw_prerelease[..2] == "rc".to_string() {
         step = "rc".to_string();
         post_number = Some(raw_prerelease[2..].parse().unwrap());
