@@ -129,8 +129,7 @@ impl PartialEq for MainBlock {
 
 impl PartialEq for PrereleaseBlock {
     fn eq(&self, other: &PrereleaseBlock) -> bool {
-        self.step == other.step && self.post_number == other.post_number \
-            && self.post_step == other.post_step
+        self.step == other.step && self.post_number == other.post_number && self.post_step == other.post_step
     }
 }
 
