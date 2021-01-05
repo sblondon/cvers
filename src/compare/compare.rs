@@ -63,6 +63,13 @@ mod tests {
         assert_equal(VERSION, VERSION);
     }
     #[test]
+    fn test_compare_equal_with_insensitive_case_rc_numbers() {
+        // https://www.python.org/dev/peps/pep-0440/#case-sensitivity
+        const VERSION_LOWERCASE: &str = "1.1-rc1";
+        const VERSION_UPPERCASE: &str = "1.1-RC1";
+        assert_equal(VERSION_LOWERCASE, VERSION_UPPERCASE);
+    }
+    #[test]
     fn test_compare_equal_with_build_number() {
         const VERSION: &str = "1.0+1";
         assert_equal(VERSION, VERSION);

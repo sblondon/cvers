@@ -102,7 +102,7 @@ fn parse_prerelease(raw_prerelease: &str) -> Option<PrereleaseBlock> {
         } else {
             post_step = Some(raw_second_elem.parse().unwrap());
         }
-    } else if raw_prerelease.len() > 2 && raw_prerelease[..2] == "rc".to_string() {
+    } else if raw_prerelease.len() > 2 && raw_prerelease[..2].to_lowercase() == "rc".to_string() {
         step = "rc".to_string();
         post_number = Some(raw_prerelease[2..].parse().unwrap());
     } else {
