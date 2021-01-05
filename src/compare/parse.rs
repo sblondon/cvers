@@ -20,7 +20,7 @@ pub fn parse_raw_version(raw_version: &str) -> Version{
 fn parse_epoch(raw_epoch: &str) -> Option<u8> {
     match raw_epoch {
         "" => None,
-        _ => Some(raw_epoch.parse().unwrap()),
+        s => Some(s.parse().unwrap()),
     }
 }
 
@@ -118,8 +118,8 @@ fn parse_prerelease(raw_prerelease: &str) -> Option<PrereleaseBlock> {
 fn parse_build(raw_build: &str) -> Option<BuildBlock> {
     match raw_build {
         "" => None,
-        _ => Some(BuildBlock {
-            number: raw_build.parse().unwrap(),
+        s => Some(BuildBlock {
+            number: s.parse().unwrap(),
         })
     }
 }
