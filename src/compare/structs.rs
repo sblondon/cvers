@@ -92,7 +92,7 @@ impl Version {
             [None, None] => Ordering::Equal,
             [Some(_), None] => Ordering::Greater,
             [None, Some(_)] => Ordering::Less,
-            [Some(_), Some(_)] => self.epoch.cmp(&other.epoch),
+            [Some(x), Some(y)] => x.cmp(&y),
         }
     }
 
@@ -101,7 +101,7 @@ impl Version {
             [None, None] => Ordering::Equal,
             [Some(_), None] => Ordering::Less,
             [None, Some(_)] => Ordering::Greater,
-            [Some(_), Some(_)] => self.pre_release.cmp(&other.pre_release),
+            [Some(x), Some(y)] => x.cmp(&y),
         }
     }
 
@@ -110,7 +110,7 @@ impl Version {
             [None, None] => Ordering::Equal,
             [Some(_), None] => Ordering::Greater,
             [None, Some(_)] => Ordering::Less,
-            [Some(_), Some(_)] => self.build.cmp(&other.build),
+            [Some(x), Some(y)] => x.cmp(&y),
         }
     }
 }
@@ -172,7 +172,7 @@ impl MainBlock {
             [None, None] => Ordering::Equal,
             [Some(_), None] => Ordering::Greater,
             [None, Some(_)] => Ordering::Less,
-            [Some(_), Some(_)] => self.post_letter.cmp(&other.post_letter),
+            [Some(x), Some(y)] => x.cmp(&y),
         }
     }
 }
@@ -200,7 +200,7 @@ impl PrereleaseBlock {
             [None, None] => Ordering::Equal,
             [Some(_), None] => Ordering::Greater,
             [None, Some(_)] => Ordering::Less,
-            [Some(_), Some(_)] => self.post_step.cmp(&other.post_step)
+            [Some(x), Some(y)] => x.cmp(y)
         }
     }
 
@@ -209,7 +209,7 @@ impl PrereleaseBlock {
             [None, None] => Ordering::Equal,
             [Some(_), None] => Ordering::Greater,
             [None, Some(_)] => Ordering::Less,
-            [Some(_), Some(_)] => self.post_number.cmp(&other.post_number)
+            [Some(x), Some(y)] => x.cmp(&y)
         }
     }
 
