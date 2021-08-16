@@ -3,7 +3,8 @@ use std::cmp::Ordering;
 
 pub fn compare_with_operator(raw_version_a: &str, raw_version_b: &str, raw_operator: &str)-> bool{
     let order = compare(raw_version_a, raw_version_b);
-    return (order == Ordering::Less && (raw_operator == "<<" || raw_operator == "<=")) ||
+
+    (order == Ordering::Less && (raw_operator == "<<" || raw_operator == "<=")) ||
         (order == Ordering::Greater && (raw_operator == ">>" || raw_operator == "=>")) ||
         (order == Ordering::Equal && (raw_operator == "<=" || raw_operator == "==" || raw_operator == "=>"))
 }
