@@ -41,14 +41,14 @@ fn main() {
 
 fn main_compare(version_a: &str, version_b: &str, parser_config: compare::ParserConfig) {
     println!("{}", display::display(
-            compare::compare(version_a, version_b, parser_config)
+            compare::compare(version_a, version_b, &parser_config)
         )
     );
 }
 
 fn main_assert(version_a: &str, version_b: &str, operator: &str, parser_config: compare::ParserConfig) -> i32 {
     let order = compare::compare_with_operator(
-        version_a, version_b, operator, parser_config);
+        version_a, version_b, operator, &parser_config);
     match order {
         true => 0,
         false => 1,
