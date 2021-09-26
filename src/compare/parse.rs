@@ -29,7 +29,7 @@ fn split_epoch_tail(s: &str) -> (&str, &str) {
     match splitted.len() {
         1 => ("", splitted[0]),
         2 => (splitted[0], splitted[1]),
-        _ => errors::exit_on_error("Error: more than one ':' character for epoch "),
+        _ => errors::exit_on_error("Error: more than one ':' character for epoch"),
     }
 }
 
