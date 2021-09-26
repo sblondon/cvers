@@ -25,14 +25,20 @@ mod tests {
     #[test]
     fn test_compare_compatible_with_tex_version() {
         const VERSION: &str = "3.14159265";
-        assert_equal(VERSION, VERSION);
+        assert_equal_with_default_parser(VERSION, VERSION);
     }
-    fn assert_equal(first: &str, second: &str){
-        let parser_config: structs::ParserConfig = default_parser_config();
 
+    fn assert_equal_with_default_parser(max: &str, min: &str){
+        let parser_config: structs::ParserConfig = structs::ParserConfig {};
+
+        assert_equal(max, min, &parser_config);
+    }
+
+    fn assert_equal(first: &str, second: &str, parser_config: &structs::ParserConfig){
         assert_eq!(compare(first, second, &parser_config), Ordering::Equal);
         assert_eq!(compare(second, first, &parser_config), Ordering::Equal);
     }
+
     fn default_parser_config() -> structs::ParserConfig {
         return structs::ParserConfig {};
     }
@@ -40,182 +46,186 @@ mod tests {
     #[test]
     fn test_compare_equal() {
         const VERSION: &str = "2";
-        assert_equal(VERSION, VERSION);
+        assert_equal_with_default_parser(VERSION, VERSION);
     }
     #[test]
     fn test_compare_equal_with_two_dots() {
         const VERSION: &str = "2.0.0";
-        assert_equal(VERSION, VERSION);
+        assert_equal_with_default_parser(VERSION, VERSION);
     }
     #[test]
     fn test_compare_equal_with_different_dots_quantity() {
         const FIRST: &str = "2";
         const SECOND: &str = "2.0.0";
-        assert_equal(FIRST, SECOND);
-        assert_equal(SECOND, FIRST);
+        assert_equal_with_default_parser(FIRST, SECOND);
+        assert_equal_with_default_parser(SECOND, FIRST);
     }
     #[test]
     fn test_compare_equal_with_alpha() {
         const VERSION: &str = "1.0-alpha";
-        assert_equal(VERSION, VERSION);
+        assert_equal_with_default_parser(VERSION, VERSION);
     }
     #[test]
     fn test_compare_equal_with_beta() {
         const VERSION: &str = "1.0-beta";
-        assert_equal(VERSION, VERSION);
+        assert_equal_with_default_parser(VERSION, VERSION);
     }
     #[test]
     fn test_compare_equal_with_rc_numbers() {
         // like linux release versions
         const VERSION: &str = "5.5-rc7";
-        assert_equal(VERSION, VERSION);
+        assert_equal_with_default_parser(VERSION, VERSION);
     }
     #[test]
     fn test_compare_equal_with_insensitive_case_rc_numbers() {
         // https://www.python.org/dev/peps/pep-0440/#case-sensitivity
         const VERSION_LOWERCASE: &str = "1.1-rc1";
         const VERSION_UPPERCASE: &str = "1.1-RC1";
-        assert_equal(VERSION_LOWERCASE, VERSION_UPPERCASE);
+        assert_equal_with_default_parser(VERSION_LOWERCASE, VERSION_UPPERCASE);
     }
     #[test]
     fn test_compare_equal_with_build_number() {
         const VERSION: &str = "1.0+1";
-        assert_equal(VERSION, VERSION);
+        assert_equal_with_default_parser(VERSION, VERSION);
     }
     #[test]
     fn test_compare_equal_with_debian_epoch() {
         const VERSION: &str = "1:1.2.3";
-        assert_equal(VERSION, VERSION);
+        assert_equal_with_default_parser(VERSION, VERSION);
     }
     #[test]
     fn test_equal_between_alpha_and_beta_sub_version() {
         const VERSION: &str = "1.0.0-alpha.beta";
-        assert_equal(VERSION, VERSION);
+        assert_equal_with_default_parser(VERSION, VERSION);
     }
     #[test]
     fn test_not_equal_basic() {
         const MAX: &str = "3";
         const MIN: &str = "2";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
-    fn assert_not_equal(max: &str, min: &str){
+    fn assert_not_equal_with_default_parser(max: &str, min: &str){
         let parser_config: structs::ParserConfig = structs::ParserConfig {};
 
-        assert_eq!(compare(max, min, &parser_config), Ordering::Greater);
-        assert_eq!(compare(min, max, &parser_config), Ordering::Less);
+        assert_not_equal(max, min, &parser_config);
+    }
+    fn assert_not_equal(max: &str, min: &str, parser_config: &structs::ParserConfig){
+
+        assert_eq!(compare(max, min, parser_config), Ordering::Greater);
+        assert_eq!(compare(min, max, parser_config), Ordering::Less);
     }
     #[test]
     fn test_not_equal_between_rc_version_and_release_version() {
         // like linux release versions
         const MAX: &str = "5.5";
         const MIN: &str = "5.5-rc6";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_with_two_dots() {
         const MAX: &str = "2.1";
         const MIN: &str = "2.0";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_with_rc_numbers_as_linux_versionning_scheme() {
         const MAX: &str = "5.5-rc7";
         const MIN: &str = "5.5-rc6";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_with_rc_numbers_as_linux_versionning_scheme_with_10_value() {
         const MAX: &str = "3.1-rc10";
         const MIN: &str = "3.1-rc9";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_between_build_number() {
         const MAX: &str = "1.0+3";
         const MIN: &str = "1.0+1";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_with_rc_numbers_between_build_number() {
         const MAX: &str = "1.0-rc1+3";
         const MIN: &str = "1.0-rc1+1";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_between_build_number_and_no_build() {
         const MAX: &str = "1.0+3";
         const MIN: &str = "1.0";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_between_alpha_and_beta_versions() {
         const MAX: &str = "5.5-beta";
         const MIN: &str = "5.5-alpha";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_between_alpha_sub_versions() {
         const MAX: &str = "5.5-alpha.10";
         const MIN: &str = "5.5-alpha.2";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_between_rc_sub_versions() {
         const MAX: &str = "5.5-rc.10";
         const MIN: &str = "5.5-rc.2";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_between_alpha_and_beta_sub_version() {
         const MAX: &str = "1.0.0-alpha.beta";
         const MIN: &str = "1.0.0-alpha.1";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
      }
     #[test]
     fn test_not_equal_between_minor_number_followed_by_letter() {
         // like openssl versions
         const MAX: &str = "1.0.2e";
         const MIN: &str = "1.0.2d";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_between_minor_number_followed_by_letter_and_no_letter() {
         // like openssl versions
         const MAX: &str = "1.0.2a";
         const MIN: &str = "1.0.2";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_between_minor_letter() {
         // like raku langage specifications
         const MAX: &str = "6.d";
         const MIN: &str = "6.c";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
 
     #[test]
     fn test_not_equal_between_beta_and_rc_versions() {
         const MAX: &str = "1.0-rc1";
         const MIN: &str = "1.0-beta";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_between_alpha_and_released_versions() {
         const MAX: &str = "5.5";
         const MIN: &str = "5.5-alpha";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_between_debian_epoch() {
         const MAX: &str = "2:2";
         const MIN: &str = "1:10";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
     #[test]
     fn test_not_equal_between_epoch_and_no_epoch() {
         const MAX: &str = "1:0.1";
         const MIN: &str = "1.2";
-        assert_not_equal(MAX, MIN);
+        assert_not_equal_with_default_parser(MAX, MIN);
     }
 
     #[test]
