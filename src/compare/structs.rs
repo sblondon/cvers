@@ -221,3 +221,6 @@ impl PrereleaseBlock {
         }
     }
 }
+
+pub struct ParserConfig {
+}

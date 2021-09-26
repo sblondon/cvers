@@ -1,15 +1,15 @@
 use std::cmp::Ordering;
 
 
-pub fn compare_with_operator(raw_version_a: &str, raw_version_b: &str, raw_operator: &str)-> bool{
-    let order = compare(raw_version_a, raw_version_b);
+pub fn compare_with_operator(raw_version_a: &str, raw_version_b: &str, raw_operator: &str, parser_config: super::structs::ParserConfig)-> bool{
+    let order = compare(raw_version_a, raw_version_b, parser_config);
 
     (order == Ordering::Less && (raw_operator == "<<" || raw_operator == "<=")) ||
         (order == Ordering::Greater && (raw_operator == ">>" || raw_operator == "=>")) ||
         (order == Ordering::Equal && (raw_operator == "<=" || raw_operator == "==" || raw_operator == "=>"))
 }
 
-pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
+pub fn compare(raw_version_a: &str, raw_version_b: &str, parser_config: super::structs::ParserConfig)-> Ordering{
     let version_a: super::structs::Version = super::parse::parse_raw_version(raw_version_a);
     let version_b: super::structs::Version = super::parse::parse_raw_version(raw_version_b);
 
@@ -20,6 +20,7 @@ pub fn compare(raw_version_a: &str, raw_version_b: &str)-> Ordering{
 #[cfg(test)]
 mod tests {
     use super::*;
+    use super::super::structs;
 
     #[test]
     fn test_compare_compatible_with_tex_version() {
@@ -27,8 +28,10 @@ mod tests {
         assert_equal(VERSION, VERSION);
     }
     fn assert_equal(first: &str, second: &str){
-        assert_eq!(compare(first, second), Ordering::Equal);
-        assert_eq!(compare(second, first), Ordering::Equal);
+        const PARSER_CONFIG: structs::ParserConfig = structs::ParserConfig {};
+
+        assert_eq!(compare(first, second, PARSER_CONFIG), Ordering::Equal);
+        assert_eq!(compare(second, first, PARSER_CONFIG), Ordering::Equal);
     }
     #[test]
     fn test_compare_equal() {
@@ -92,8 +95,10 @@ mod tests {
         assert_not_equal(MAX, MIN);
     }
     fn assert_not_equal(max: &str, min: &str){
-        assert_eq!(compare(max, min), Ordering::Greater);
-        assert_eq!(compare(min, max), Ordering::Less);
+        const PARSER_CONFIG: structs::ParserConfig = structs::ParserConfig {};
+
+        assert_eq!(compare(max, min, PARSER_CONFIG), Ordering::Greater);
+        assert_eq!(compare(min, max, PARSER_CONFIG), Ordering::Less);
     }
     #[test]
     fn test_not_equal_between_rc_version_and_release_version() {
@@ -211,28 +216,30 @@ mod tests {
 
     #[test]
     fn test_match_operator_for_different_versions() {
+        const PARSER_CONFIG: structs::ParserConfig = structs::ParserConfig {};
         const MAX: &str = "2";
         const MIN: &str = "1";
 
-        assert!(compare_with_operator(MIN, MAX, "<<"));
-        assert!(compare_with_operator(MIN, MAX, "<="));
-        assert_eq!(compare_with_operator(MIN, MAX, "=="), false);
-        assert!(compare_with_operator(MAX, MIN, "=>"));
-        assert!(compare_with_operator(MAX, MIN, ">>"));
-        assert_eq!(compare_with_operator(MAX, MIN, "<<"), false);
-        assert_eq!(compare_with_operator(MAX, MIN, "<="), false);
-        assert_eq!(compare_with_operator(MIN, MAX, "=>"), false);
-        assert_eq!(compare_with_operator(MIN, MAX, ">>"), false);
+        assert!(compare_with_operator(MIN, MAX, "<<", PARSER_CONFIG));
+        assert!(compare_with_operator(MIN, MAX, "<=", PARSER_CONFIG));
+        assert_eq!(compare_with_operator(MIN, MAX, "==", PARSER_CONFIG), false);
+        assert!(compare_with_operator(MAX, MIN, "=>", PARSER_CONFIG));
+        assert!(compare_with_operator(MAX, MIN, ">>", PARSER_CONFIG));
+        assert_eq!(compare_with_operator(MAX, MIN, "<<", PARSER_CONFIG), false);
+        assert_eq!(compare_with_operator(MAX, MIN, "<=", PARSER_CONFIG), false);
+        assert_eq!(compare_with_operator(MIN, MAX, "=>", PARSER_CONFIG), false);
+        assert_eq!(compare_with_operator(MIN, MAX, ">>", PARSER_CONFIG), false);
     }
     #[test]
     fn test_match_operator_for_same_version() {
+        const PARSER_CONFIG: structs::ParserConfig = structs::ParserConfig {};
         const VERSION: &str = "2";
 
-        assert_eq!(compare_with_operator(VERSION, VERSION, "<<"), false);
-        assert!(compare_with_operator(VERSION, VERSION, "<="));
-        assert!(compare_with_operator(VERSION, VERSION, "=="));
-        assert!(compare_with_operator(VERSION, VERSION, "=>"));
-        assert_eq!(compare_with_operator(VERSION, VERSION, ">>"), false);
+        assert_eq!(compare_with_operator(VERSION, VERSION, "<<", PARSER_CONFIG), false);
+        assert!(compare_with_operator(VERSION, VERSION, "<=", PARSER_CONFIG));
+        assert!(compare_with_operator(VERSION, VERSION, "==", PARSER_CONFIG));
+        assert!(compare_with_operator(VERSION, VERSION, "=>", PARSER_CONFIG));
+        assert_eq!(compare_with_operator(VERSION, VERSION, ">>", PARSER_CONFIG), false);
     }
 
 }

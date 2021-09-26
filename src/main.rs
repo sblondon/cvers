@@ -14,10 +14,11 @@ fn main() {
         errors::exit_on_error("Invalid parameters");
     }
 
+    let parser_config = compare::ParserConfig {};
     let verb = args[1].as_str();
     match verb {
         "compare" => {
-            main_compare(&args[2], &args[3]);
+            main_compare(&args[2], &args[3], parser_config);
         },
         "assert" => {
             let operator = &args[3];
@@ -27,7 +28,7 @@ fn main() {
                 errors::exit_on_error(error_message.as_str());
             } else {
                 process::exit(
-                    main_assert(&args[2], &args[4], operator)
+                    main_assert(&args[2], &args[4], operator, parser_config)
                 );
             }
         },
@@ -38,16 +39,16 @@ fn main() {
     }
 }
 
-fn main_compare(version_a: &str, version_b: &str) {
+fn main_compare(version_a: &str, version_b: &str, parser_config: compare::ParserConfig) {
     println!("{}", display::display(
-            compare::compare(version_a, version_b)
+            compare::compare(version_a, version_b, parser_config)
         )
     );
 }
 
-fn main_assert(version_a: &str, version_b: &str, operator: &str) -> i32 {
+fn main_assert(version_a: &str, version_b: &str, operator: &str, parser_config: compare::ParserConfig) -> i32 {
     let order = compare::compare_with_operator(
-        version_a, version_b, operator);
+        version_a, version_b, operator, parser_config);
     match order {
         true => 0,
         false => 1,
