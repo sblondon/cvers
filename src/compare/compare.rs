@@ -28,10 +28,10 @@ mod tests {
         assert_equal(VERSION, VERSION);
     }
     fn assert_equal(first: &str, second: &str){
-        let PARSER_CONFIG: structs::ParserConfig = default_parser_config();
+        let parser_config: structs::ParserConfig = default_parser_config();
 
-        assert_eq!(compare(first, second, &PARSER_CONFIG), Ordering::Equal);
-        assert_eq!(compare(second, first, &PARSER_CONFIG), Ordering::Equal);
+        assert_eq!(compare(first, second, &parser_config), Ordering::Equal);
+        assert_eq!(compare(second, first, &parser_config), Ordering::Equal);
     }
     fn default_parser_config() -> structs::ParserConfig {
         return structs::ParserConfig {};
@@ -99,10 +99,10 @@ mod tests {
         assert_not_equal(MAX, MIN);
     }
     fn assert_not_equal(max: &str, min: &str){
-        const PARSER_CONFIG: structs::ParserConfig = structs::ParserConfig {};
+        let parser_config: structs::ParserConfig = structs::ParserConfig {};
 
-        assert_eq!(compare(max, min, &PARSER_CONFIG), Ordering::Greater);
-        assert_eq!(compare(min, max, &PARSER_CONFIG), Ordering::Less);
+        assert_eq!(compare(max, min, &parser_config), Ordering::Greater);
+        assert_eq!(compare(min, max, &parser_config), Ordering::Less);
     }
     #[test]
     fn test_not_equal_between_rc_version_and_release_version() {
@@ -220,30 +220,30 @@ mod tests {
 
     #[test]
     fn test_match_operator_for_different_versions() {
-        const PARSER_CONFIG: structs::ParserConfig = structs::ParserConfig {};
+        let parser_config: structs::ParserConfig = default_parser_config();
         const MAX: &str = "2";
         const MIN: &str = "1";
 
-        assert!(compare_with_operator(MIN, MAX, "<<", &PARSER_CONFIG));
-        assert!(compare_with_operator(MIN, MAX, "<=", &PARSER_CONFIG));
-        assert_eq!(compare_with_operator(MIN, MAX, "==", &PARSER_CONFIG), false);
-        assert!(compare_with_operator(MAX, MIN, "=>", &PARSER_CONFIG));
-        assert!(compare_with_operator(MAX, MIN, ">>", &PARSER_CONFIG));
-        assert_eq!(compare_with_operator(MAX, MIN, "<<", &PARSER_CONFIG), false);
-        assert_eq!(compare_with_operator(MAX, MIN, "<=", &PARSER_CONFIG), false);
-        assert_eq!(compare_with_operator(MIN, MAX, "=>", &PARSER_CONFIG), false);
-        assert_eq!(compare_with_operator(MIN, MAX, ">>", &PARSER_CONFIG), false);
+        assert!(compare_with_operator(MIN, MAX, "<<", &parser_config));
+        assert!(compare_with_operator(MIN, MAX, "<=", &parser_config));
+        assert_eq!(compare_with_operator(MIN, MAX, "==", &parser_config), false);
+        assert!(compare_with_operator(MAX, MIN, "=>", &parser_config));
+        assert!(compare_with_operator(MAX, MIN, ">>", &parser_config));
+        assert_eq!(compare_with_operator(MAX, MIN, "<<", &parser_config), false);
+        assert_eq!(compare_with_operator(MAX, MIN, "<=", &parser_config), false);
+        assert_eq!(compare_with_operator(MIN, MAX, "=>", &parser_config), false);
+        assert_eq!(compare_with_operator(MIN, MAX, ">>", &parser_config), false);
     }
     #[test]
     fn test_match_operator_for_same_version() {
-        const PARSER_CONFIG: structs::ParserConfig = structs::ParserConfig {};
+        let parser_config: structs::ParserConfig = default_parser_config();
         const VERSION: &str = "2";
 
-        assert_eq!(compare_with_operator(VERSION, VERSION, "<<", &PARSER_CONFIG), false);
-        assert!(compare_with_operator(VERSION, VERSION, "<=", &PARSER_CONFIG));
-        assert!(compare_with_operator(VERSION, VERSION, "==", &PARSER_CONFIG));
-        assert!(compare_with_operator(VERSION, VERSION, "=>", &PARSER_CONFIG));
-        assert_eq!(compare_with_operator(VERSION, VERSION, ">>", &PARSER_CONFIG), false);
+        assert_eq!(compare_with_operator(VERSION, VERSION, "<<", &parser_config), false);
+        assert!(compare_with_operator(VERSION, VERSION, "<=", &parser_config));
+        assert!(compare_with_operator(VERSION, VERSION, "==", &parser_config));
+        assert!(compare_with_operator(VERSION, VERSION, "=>", &parser_config));
+        assert_eq!(compare_with_operator(VERSION, VERSION, ">>", &parser_config), false);
     }
 
 }
