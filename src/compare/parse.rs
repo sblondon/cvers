@@ -75,7 +75,14 @@ fn parse_main(raw_main_block: &str, parser_config: &ParserConfig) -> MainBlock {
             match parser_config.pre_release_touchs_digit {
                 Some(true) => {pre_main_letter = subversion.chars().last();},
                 Some(false) => {post_main_letter = subversion.chars().last();},
-                _ => {},
+                None => {
+                    let message = format!(
+                        "Error: invalid letter ('{}') in '{}'",
+                        subversion.chars().last().unwrap(),
+                        raw_main_block.to_string()
+                    ).as_str().to_owned();
+                    errors::exit_on_error(&message);
+                },
             }
         } else {
             main_version_numbers.push(subversion.parse().unwrap());
