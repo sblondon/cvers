@@ -14,7 +14,9 @@ fn main() {
         errors::exit_on_error("Invalid parameters");
     }
 
-    let parser_config = compare::ParserConfig {};
+    let parser_config = compare::ParserConfig {
+        pre_release_touchs_digit: None
+    };
     let verb = args[1].as_str();
     match verb {
         "compare" => {

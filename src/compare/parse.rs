@@ -1,12 +1,12 @@
 use super::super::errors;
-use super::structs::{Version, MainBlock, PrereleaseBlock, BuildBlock};
+use super::structs::{Version, MainBlock, PrereleaseBlock, BuildBlock, ParserConfig};
 
-pub fn parse_raw_version(raw_version: &str) -> Version{
+pub fn parse_raw_version(raw_version: &str, parser_config: &ParserConfig) -> Version{
     let (raw_epoch, raw_tail): (&str, &str) = split_epoch_tail(raw_version);
     let epoch: Option<u8> = parse_epoch(raw_epoch);
 
     let (raw_main, raw_prerelease, raw_build): (&str, &str, &str) = split_version_prerelease_build(&raw_tail);
-    let main_block: MainBlock = parse_main(raw_main);
+    let main_block: MainBlock = parse_main(raw_main, parser_config);
     let prerelease_block: Option<PrereleaseBlock> = parse_prerelease(&raw_prerelease);
     let build_block: Option<BuildBlock> = parse_build(&raw_build);
     Version {
@@ -62,8 +62,9 @@ fn split_version_prerelease_build(s: &str) -> (&str, &str, &str) {
     }
 }
 
-fn parse_main(raw_main_block: &str) -> MainBlock {
+fn parse_main(raw_main_block: &str, parser_config: &ParserConfig) -> MainBlock {
     let mut main_version_numbers: Vec<u32> = Vec::new();
+    let mut pre_main_letter: Option<char> = None;
     let mut post_main_letter: Option<char> = None;
     for subversion in raw_main_block.split('.'){
         if last_char_is_letter(&subversion) {
@@ -71,13 +72,18 @@ fn parse_main(raw_main_block: &str) -> MainBlock {
                 let index_without_last_char: usize = subversion.chars().count() - 1;
                 main_version_numbers.push(subversion[0..index_without_last_char].parse().unwrap());
             }
-            post_main_letter = subversion.chars().last();
+            match parser_config.pre_release_touchs_digit {
+                Some(true) => {pre_main_letter = subversion.chars().last();},
+                Some(false) => {post_main_letter = subversion.chars().last();},
+                _ => {},
+            }
         } else {
             main_version_numbers.push(subversion.parse().unwrap());
         }
     }
     MainBlock {
         numbers: main_version_numbers,
+        pre_letter: pre_main_letter,
         post_letter: post_main_letter,
     }
 }

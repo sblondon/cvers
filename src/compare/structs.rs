@@ -13,6 +13,7 @@ pub struct Version {
 #[derive(Eq)]
 pub struct MainBlock {
     pub numbers: Vec<u32>,
+    pub pre_letter: Option<char>,
     pub post_letter: Option<char>,
 }
 
@@ -140,6 +141,11 @@ impl Ord for MainBlock {
             return order
         }
 
+        let order: Ordering = self.cmp_pre_letter(other);
+        if order != Ordering::Equal {
+            return order
+        }
+
         self.cmp_post_letter(other)
     }
 }
@@ -165,6 +171,15 @@ impl MainBlock {
            }
        }
        Ordering::Equal
+    }
+
+    fn cmp_pre_letter(&self, other: &MainBlock) -> Ordering {
+        match [self.pre_letter, other.pre_letter] {
+            [None, None] => Ordering::Equal,
+            [Some(_), None] => Ordering::Less,
+            [None, Some(_)] => Ordering::Greater,
+            [Some(x), Some(y)] => x.cmp(&y),
+        }
     }
 
     fn cmp_post_letter(&self, other: &MainBlock) -> Ordering {
@@ -223,4 +238,5 @@ impl PrereleaseBlock {
 }
 
 pub struct ParserConfig {
+    pub pre_release_touchs_digit: Option<bool>,
 }

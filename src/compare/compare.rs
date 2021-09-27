@@ -10,8 +10,8 @@ pub fn compare_with_operator(raw_version_a: &str, raw_version_b: &str, raw_opera
 }
 
 pub fn compare(raw_version_a: &str, raw_version_b: &str, parser_config: &super::structs::ParserConfig)-> Ordering{
-    let version_a: super::structs::Version = super::parse::parse_raw_version(raw_version_a);
-    let version_b: super::structs::Version = super::parse::parse_raw_version(raw_version_b);
+    let version_a: super::structs::Version = super::parse::parse_raw_version(raw_version_a, parser_config);
+    let version_b: super::structs::Version = super::parse::parse_raw_version(raw_version_b, parser_config);
 
     version_a.cmp(&version_b)
 }
@@ -29,7 +29,7 @@ mod tests {
     }
 
     fn assert_equal_with_default_parser(max: &str, min: &str){
-        let parser_config: structs::ParserConfig = structs::ParserConfig {};
+        let parser_config: structs::ParserConfig = default_parser_config();
 
         assert_equal(max, min, &parser_config);
     }
@@ -40,7 +40,9 @@ mod tests {
     }
 
     fn default_parser_config() -> structs::ParserConfig {
-        return structs::ParserConfig {};
+        return structs::ParserConfig {
+            pre_release_touchs_digit: None
+        };
     }
 
     #[test]
@@ -105,7 +107,7 @@ mod tests {
         assert_not_equal_with_default_parser(MAX, MIN);
     }
     fn assert_not_equal_with_default_parser(max: &str, min: &str){
-        let parser_config: structs::ParserConfig = structs::ParserConfig {};
+        let parser_config: structs::ParserConfig = default_parser_config();
 
         assert_not_equal(max, min, &parser_config);
     }
@@ -186,21 +188,55 @@ mod tests {
         // like openssl versions
         const MAX: &str = "1.0.2e";
         const MIN: &str = "1.0.2d";
-        assert_not_equal_with_default_parser(MAX, MIN);
+        let parser_config: structs::ParserConfig = structs::ParserConfig {
+            pre_release_touchs_digit: Some(false)
+        };
+
+        assert_not_equal(MAX, MIN, &parser_config);
     }
     #[test]
     fn test_not_equal_between_minor_number_followed_by_letter_and_no_letter_considered_postrelease() {
         // like openssl versions
         const MAX: &str = "1.0.2a";
         const MIN: &str = "1.0.2";
-        assert_not_equal_with_default_parser(MAX, MIN);
+        let parser_config: structs::ParserConfig = structs::ParserConfig {
+            pre_release_touchs_digit: Some(false)
+        };
+
+        assert_not_equal(MAX, MIN, &parser_config);
+    }
+    #[test]
+    fn test_not_equal_between_minor_number_followed_by_letter_considered_prerelease() {
+        // like python PEP: https://www.python.org/dev/peps/pep-0440
+        const MAX: &str = "1.0.2e";
+        const MIN: &str = "1.0.2d";
+        let parser_config: structs::ParserConfig = structs::ParserConfig {
+            pre_release_touchs_digit: Some(true)
+        };
+
+        assert_not_equal(MAX, MIN, &parser_config);
+    }
+    #[test]
+    fn test_not_equal_between_minor_number_followed_by_letter_and_no_letter_considered_prerelease() {
+        // like python PEP: https://www.python.org/dev/peps/pep-0440
+        const MAX: &str = "1.0.2";
+        const MIN: &str = "1.0.2a";
+        let parser_config: structs::ParserConfig = structs::ParserConfig {
+            pre_release_touchs_digit: Some(true)
+        };
+
+        assert_not_equal(MAX, MIN, &parser_config);
     }
     #[test]
     fn test_not_equal_between_minor_letter() {
         // like raku langage specifications
         const MAX: &str = "6.d";
         const MIN: &str = "6.c";
-        assert_not_equal_with_default_parser(MAX, MIN);
+        let parser_config: structs::ParserConfig = structs::ParserConfig {
+            pre_release_touchs_digit: Some(true)
+        };
+
+        assert_not_equal(MAX, MIN, &parser_config);
     }
 
     #[test]
