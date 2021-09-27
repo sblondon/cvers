@@ -72,13 +72,14 @@ fn parse_main(raw_main_block: &str, parser_config: &ParserConfig) -> MainBlock {
                 let index_without_last_char: usize = subversion.chars().count() - 1;
                 main_version_numbers.push(subversion[0..index_without_last_char].parse().unwrap());
             }
+            let last_char: Option<char> = subversion.chars().last();
             match parser_config.pre_release_touchs_digit {
-                Some(true) => {pre_main_letter = subversion.chars().last();},
-                Some(false) => {post_main_letter = subversion.chars().last();},
+                Some(true) => {pre_main_letter = last_char;},
+                Some(false) => {post_main_letter = last_char;},
                 None => {
                     let message = format!(
                         "Error: invalid letter ('{}') in '{}'",
-                        subversion.chars().last().unwrap(),
+                        last_char.unwrap(),
                         raw_main_block.to_string()
                     ).as_str().to_owned();
                     errors::exit_on_error(&message);
