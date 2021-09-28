@@ -53,6 +53,13 @@ mod tests {
         };
     }
 
+    fn openssl_parser_config() -> structs::ParserConfig {
+        return structs::ParserConfig {
+            epoch_separator: None,
+            pre_release_touchs_digit: Some(false)
+        };
+    }
+
     #[test]
     fn test_compare_equal() {
         const VERSION: &str = "2";
@@ -204,10 +211,7 @@ mod tests {
         // like openssl versions
         const MAX: &str = "1.0.2e";
         const MIN: &str = "1.0.2d";
-        let parser_config: structs::ParserConfig = structs::ParserConfig {
-            epoch_separator: None,
-            pre_release_touchs_digit: Some(false)
-        };
+        let parser_config: structs::ParserConfig = openssl_parser_config();
 
         assert_not_equal(MAX, MIN, &parser_config);
     }
@@ -216,10 +220,7 @@ mod tests {
         // like openssl versions
         const MAX: &str = "1.0.2a";
         const MIN: &str = "1.0.2";
-        let parser_config: structs::ParserConfig = structs::ParserConfig {
-            epoch_separator: None,
-            pre_release_touchs_digit: Some(false)
-        };
+        let parser_config: structs::ParserConfig = openssl_parser_config();
 
         assert_not_equal(MAX, MIN, &parser_config);
     }
