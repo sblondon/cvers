@@ -33,7 +33,13 @@ fn split_epoch_tail<'a>(s: &'a str, parser_config: &ParserConfig) -> (&'a str, &
     match splitted.len() {
         1 => ("", splitted[0]),
         2 => (splitted[0], splitted[1]),
-        _ => errors::exit_on_error("Error: more than one ':' character for epoch"),
+        _ => {
+            let message = format!(
+                "Error: more than one '{separator}' character for epoch",
+                separator=separator,
+            ).as_str().to_owned();
+            errors::exit_on_error(&message);
+        },
     }
 }
 
