@@ -46,6 +46,13 @@ mod tests {
         };
     }
 
+    fn python_parser_config() -> structs::ParserConfig {
+        return structs::ParserConfig {
+            epoch_separator: Some('!'),
+            pre_release_touchs_digit: Some(true),
+        };
+    }
+
     #[test]
     fn test_compare_equal() {
         const VERSION: &str = "2";
@@ -100,10 +107,7 @@ mod tests {
     fn test_compare_equal_with_python_epoch() {
         // https://www.python.org/dev/peps/pep-0440/
         const VERSION: &str = "1!1.2.3";
-        let parser_config: structs::ParserConfig = structs::ParserConfig {
-            epoch_separator: Some('!'),
-            pre_release_touchs_digit: Some(true),
-        };
+        let parser_config: structs::ParserConfig = python_parser_config();
 
         assert_equal(VERSION, VERSION, &parser_config);
     }
@@ -224,10 +228,7 @@ mod tests {
         // like python PEP: https://www.python.org/dev/peps/pep-0440
         const MAX: &str = "1.0.2e";
         const MIN: &str = "1.0.2d";
-        let parser_config: structs::ParserConfig = structs::ParserConfig {
-            epoch_separator: None,
-            pre_release_touchs_digit: Some(true)
-        };
+        let parser_config: structs::ParserConfig = python_parser_config();
 
         assert_not_equal(MAX, MIN, &parser_config);
     }
@@ -236,10 +237,7 @@ mod tests {
         // like python PEP: https://www.python.org/dev/peps/pep-0440
         const MAX: &str = "1.0.2";
         const MIN: &str = "1.0.2a";
-        let parser_config: structs::ParserConfig = structs::ParserConfig {
-            epoch_separator: Some('!'),
-            pre_release_touchs_digit: Some(true)
-        };
+        let parser_config: structs::ParserConfig = python_parser_config();
 
         assert_not_equal(MAX, MIN, &parser_config);
     }
