@@ -41,6 +41,7 @@ mod tests {
 
     fn default_parser_config() -> structs::ParserConfig {
         return structs::ParserConfig {
+            epoch_separator: Some(':'),
             pre_release_touchs_digit: None
         };
     }
@@ -94,6 +95,17 @@ mod tests {
     fn test_compare_equal_with_debian_epoch() {
         const VERSION: &str = "1:1.2.3";
         assert_equal_with_default_parser(VERSION, VERSION);
+    }
+    #[test]
+    fn test_compare_equal_with_python_epoch() {
+        // https://www.python.org/dev/peps/pep-0440/
+        const VERSION: &str = "1!1.2.3";
+        let parser_config: structs::ParserConfig = structs::ParserConfig {
+            epoch_separator: Some('!'),
+            pre_release_touchs_digit: Some(true),
+        };
+
+        assert_equal(VERSION, VERSION, &parser_config);
     }
     #[test]
     fn test_equal_between_alpha_and_beta_sub_version() {
@@ -189,6 +201,7 @@ mod tests {
         const MAX: &str = "1.0.2e";
         const MIN: &str = "1.0.2d";
         let parser_config: structs::ParserConfig = structs::ParserConfig {
+            epoch_separator: None,
             pre_release_touchs_digit: Some(false)
         };
 
@@ -200,6 +213,7 @@ mod tests {
         const MAX: &str = "1.0.2a";
         const MIN: &str = "1.0.2";
         let parser_config: structs::ParserConfig = structs::ParserConfig {
+            epoch_separator: None,
             pre_release_touchs_digit: Some(false)
         };
 
@@ -211,6 +225,7 @@ mod tests {
         const MAX: &str = "1.0.2e";
         const MIN: &str = "1.0.2d";
         let parser_config: structs::ParserConfig = structs::ParserConfig {
+            epoch_separator: None,
             pre_release_touchs_digit: Some(true)
         };
 
@@ -222,6 +237,7 @@ mod tests {
         const MAX: &str = "1.0.2";
         const MIN: &str = "1.0.2a";
         let parser_config: structs::ParserConfig = structs::ParserConfig {
+            epoch_separator: Some('!'),
             pre_release_touchs_digit: Some(true)
         };
 
@@ -233,6 +249,7 @@ mod tests {
         const MAX: &str = "6.d";
         const MIN: &str = "6.c";
         let parser_config: structs::ParserConfig = structs::ParserConfig {
+            epoch_separator: None,
             pre_release_touchs_digit: Some(true)
         };
 

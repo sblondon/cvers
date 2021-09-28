@@ -238,5 +238,6 @@ impl PrereleaseBlock {
 }
 
 pub struct ParserConfig {
+    pub epoch_separator: Option<char>,
     pub pre_release_touchs_digit: Option<bool>,
 }
