@@ -27,7 +27,7 @@ fn main() {
             let operator = &args[3];
             let operators: HashSet<&'static str> = ["<<", "<=", "==", "=>", ">>"].iter().cloned().collect();
             if ! operators.contains(&operator.as_str()) {
-                let error_message = format!("Invalid operator '{}'.", operator);
+                let error_message = format!("Invalid operator '{operator}'.", operator=operator);
                 errors::exit_on_error(error_message.as_str());
             } else {
                 process::exit(
@@ -36,7 +36,7 @@ fn main() {
             }
         },
         _ => {
-            let error_message = format!("Invalid verb '{}'. Use 'compare' or 'assert'.", verb);
+            let error_message = format!("Invalid verb '{verb}'. Use 'compare' or 'assert'.", verb=verb);
             errors::exit_on_error(error_message.as_str());
         }
     }

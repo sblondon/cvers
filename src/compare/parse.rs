@@ -44,8 +44,8 @@ fn split_str(s: &str, delimiter: char) -> (&str, &str) {
         2 => (splitted[0], splitted[1]),
         _ => {
             let message = format!(
-                "Error: more than one '{}' character",
-                delimiter.to_string()
+                "Error: more than one '{delimiter}' character",
+                delimiter=delimiter.to_string()
             ).as_str().to_owned();
             errors::exit_on_error(&message);
         },
@@ -82,9 +82,9 @@ fn parse_main(raw_main_block: &str, parser_config: &ParserConfig) -> MainBlock {
                 Some(false) => {post_main_letter = last_char;},
                 None => {
                     let message = format!(
-                        "Error: invalid letter ('{}') in '{}'",
-                        last_char.unwrap(),
-                        raw_main_block.to_string()
+                        "Error: invalid letter ('{letter}') in '{block}'",
+                        letter=last_char.unwrap(),
+                        block=raw_main_block.to_string()
                     ).as_str().to_owned();
                     errors::exit_on_error(&message);
                 },
