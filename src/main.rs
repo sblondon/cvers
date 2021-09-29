@@ -15,7 +15,7 @@ fn main() {
     }
 
     let parser_config = compare::ParserConfig {
-        epoch_separator: Some(':'),
+        epoch_delimiter: Some(':'),
         pre_release_touchs_digit: None,
     };
     let verb = args[1].as_str();

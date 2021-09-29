@@ -41,21 +41,21 @@ mod tests {
 
     fn default_parser_config() -> structs::ParserConfig {
         return structs::ParserConfig {
-            epoch_separator: Some(':'),
+            epoch_delimiter: Some(':'),
             pre_release_touchs_digit: None
         };
     }
 
     fn python_parser_config() -> structs::ParserConfig {
         return structs::ParserConfig {
-            epoch_separator: Some('!'),
+            epoch_delimiter: Some('!'),
             pre_release_touchs_digit: Some(true),
         };
     }
 
     fn openssl_parser_config() -> structs::ParserConfig {
         return structs::ParserConfig {
-            epoch_separator: None,
+            epoch_delimiter: None,
             pre_release_touchs_digit: Some(false)
         };
     }
@@ -248,7 +248,7 @@ mod tests {
         const MAX: &str = "6.d";
         const MIN: &str = "6.c";
         let parser_config: structs::ParserConfig = structs::ParserConfig {
-            epoch_separator: None,
+            epoch_delimiter: None,
             pre_release_touchs_digit: Some(true)
         };
 

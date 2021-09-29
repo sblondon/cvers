@@ -25,18 +25,18 @@ fn parse_epoch(raw_epoch: &str) -> Option<u8> {
 }
 
 fn split_epoch_tail<'a>(s: &'a str, parser_config: &ParserConfig) -> (&'a str, &'a str) {
-    if parser_config.epoch_separator == None {
+    if parser_config.epoch_delimiter == None {
         return ("", s)
     }
-    let separator = parser_config.epoch_separator.unwrap();
-    let splitted: Vec<&str> = s.split(separator).collect();
+    let delimiter = parser_config.epoch_delimiter.unwrap();
+    let splitted: Vec<&str> = s.split(delimiter).collect();
     match splitted.len() {
         1 => ("", splitted[0]),
         2 => (splitted[0], splitted[1]),
         _ => {
             let message = format!(
-                "Error: more than one '{separator}' character for epoch",
-                separator=separator,
+                "Error: more than one '{delimiter}' character for epoch",
+                delimiter=delimiter,
             ).as_str().to_owned();
             errors::exit_on_error(&message);
         },
