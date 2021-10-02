@@ -35,7 +35,7 @@ fn canonical_operations(args: Vec<String>) {
     let verb = args[1].as_str();
     match verb {
         "compare" => {
-            main_compare(&args[2], &args[3], parser_config);
+            compare_operation(&args[2], &args[3], parser_config);
         },
         "assert" => {
             let operator = &args[3];
@@ -45,7 +45,7 @@ fn canonical_operations(args: Vec<String>) {
                 errors::exit_on_error(error_message.as_str());
             } else {
                 process::exit(
-                    main_assert(&args[2], &args[4], operator, parser_config)
+                    assert_operation(&args[2], &args[4], operator, parser_config)
                 );
             }
         },
@@ -56,14 +56,14 @@ fn canonical_operations(args: Vec<String>) {
     }
 }
 
-fn main_compare(version_a: &str, version_b: &str, parser_config: compare::ParserConfig) {
+fn compare_operation(version_a: &str, version_b: &str, parser_config: compare::ParserConfig) {
     println!("{}", display::display(
             compare::compare(version_a, version_b, &parser_config)
         )
     );
 }
 
-fn main_assert(version_a: &str, version_b: &str, operator: &str, parser_config: compare::ParserConfig) -> i32 {
+fn assert_operation(version_a: &str, version_b: &str, operator: &str, parser_config: compare::ParserConfig) -> i32 {
     let order = compare::compare_with_operator(
         version_a, version_b, operator, &parser_config);
     match order {
