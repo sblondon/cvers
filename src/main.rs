@@ -10,10 +10,20 @@ mod errors;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args.len() < 4 {
+    if args[1] == "--help" {
+        help();
+    } else if args.len() < 4 {
         errors::exit_on_error("Invalid parameters");
+    } else {
+        canonical_operations(args);
     }
-    canonical_operations(args);
+}
+
+
+fn help() {
+    println!("Usage:
+ - cvers compare version1 version2
+ - cvers assert version1 operator version2");
 }
 
 fn canonical_operations(args: Vec<String>) {
