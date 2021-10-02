@@ -13,7 +13,10 @@ fn main() {
     if args.len() < 4 {
         errors::exit_on_error("Invalid parameters");
     }
+    canonical_operations(args);
+}
 
+fn canonical_operations(args: Vec<String>) {
     let parser_config = compare::ParserConfig {
         epoch_delimiter: Some(':'),
         pre_release_touchs_digit: None,
