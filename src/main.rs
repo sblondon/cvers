@@ -13,7 +13,7 @@ fn main() {
     if args[1] == "--help" {
         help();
     } else if args.len() < 4 {
-        errors::exit_on_error("Invalid parameters");
+        errors::exit_on_error("Missing parameters");
     } else {
         canonical_operations(args);
     }
