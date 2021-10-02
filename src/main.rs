@@ -10,7 +10,9 @@ mod errors;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args[1] == "--help" {
+    if args.len() == 1 {
+        errors::exit_on_error("Missing parameters");
+    } else if args[1] == "--help" {
         help();
     } else if args.len() < 4 {
         errors::exit_on_error("Missing parameters");
@@ -18,7 +20,6 @@ fn main() {
         canonical_operations(args);
     }
 }
-
 
 fn help() {
     println!("Usage:
