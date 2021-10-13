@@ -20,7 +20,7 @@ pub fn compare(raw_version_a: &str, raw_version_b: &str, parser_config: &super::
 mod tests {
     use super::*;
     use super::super::structs;
-    use super::config::default_parser_config;
+    use super::super::config::default_parser_config;
 
     #[test]
     fn test_compare_compatible_with_tex_version() {
