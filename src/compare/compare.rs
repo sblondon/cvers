@@ -1,6 +1,5 @@
 use std::cmp::Ordering;
 
-
 pub fn compare_with_operator(raw_version_a: &str, raw_version_b: &str, raw_operator: &str, parser_config: &super::structs::ParserConfig)-> bool{
     let order = compare(raw_version_a, raw_version_b, &parser_config);
 
@@ -21,6 +20,7 @@ pub fn compare(raw_version_a: &str, raw_version_b: &str, parser_config: &super::
 mod tests {
     use super::*;
     use super::super::structs;
+    use super::config::default_parser_config;
 
     #[test]
     fn test_compare_compatible_with_tex_version() {
@@ -37,13 +37,6 @@ mod tests {
     fn assert_equal(first: &str, second: &str, parser_config: &structs::ParserConfig){
         assert_eq!(compare(first, second, &parser_config), Ordering::Equal);
         assert_eq!(compare(second, first, &parser_config), Ordering::Equal);
-    }
-
-    fn default_parser_config() -> structs::ParserConfig {
-        return structs::ParserConfig {
-            epoch_delimiter: Some(':'),
-            pre_release_touchs_digit: None
-        };
     }
 
     fn python_parser_config() -> structs::ParserConfig {
