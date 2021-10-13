@@ -28,10 +28,7 @@ fn help() {
 }
 
 fn canonical_operations(args: Vec<String>) {
-    let parser_config = compare::ParserConfig {
-        epoch_delimiter: Some(':'),
-        pre_release_touchs_digit: None,
-    };
+    let parser_config = compare::default_parser_config();
     let verb = args[1].as_str();
     match verb {
         "compare" => {
