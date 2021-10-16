@@ -17,7 +17,10 @@ fn main() {
     } else if args.len() < 4 {
         errors::exit_on_error("Missing parameters");
     } else {
-        canonical_operations(args);
+        let tuple = parse_arguments(args);
+        let config: compare::ParserConfig = tuple.0;
+        let mandatories_args: Vec<String> = tuple.1;
+        canonical_operations(config, mandatories_args);
     }
 }
 
@@ -27,8 +30,12 @@ fn help() {
  - cvers assert version1 operator version2");
 }
 
-fn canonical_operations(args: Vec<String>) {
+fn parse_arguments(args: Vec<String>) -> (compare::ParserConfig, Vec::<String>) {
     let parser_config = compare::default_parser_config();
+    (parser_config, args)
+}
+
+fn canonical_operations(parser_config: compare::ParserConfig, args: Vec<String>) {
     let verb = args[1].as_str();
     match verb {
         "compare" => {
