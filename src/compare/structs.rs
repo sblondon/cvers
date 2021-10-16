@@ -245,6 +245,6 @@ pub struct ParserConfig {
 
 impl PartialEq for ParserConfig {
     fn eq(&self, other: &Self) -> bool {
-        true
+        self.epoch_delimiter == other.epoch_delimiter && self.pre_release_touchs_digit == other.pre_release_touchs_digit
     }
 }
