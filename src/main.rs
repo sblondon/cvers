@@ -3,6 +3,7 @@ use std::process;
 
 use std::collections::HashSet;
 
+mod args;
 mod compare;
 mod display;
 mod errors;
@@ -17,7 +18,7 @@ fn main() {
     } else if args.len() < 4 {
         errors::exit_on_error("Missing parameters");
     } else {
-        let tuple = parse_arguments(args);
+        let tuple = args::parse_arguments(args);
         let config: compare::ParserConfig = tuple.0;
         let mandatories_args: Vec<String> = tuple.1;
         canonical_operations(config, mandatories_args);
@@ -29,21 +30,6 @@ fn help() {
  - cvers compare version1 version2
  - cvers assert version1 operator version2
  - cvers --help");
-}
-
-fn parse_arguments(args: Vec<String>) -> (compare::ParserConfig, Vec::<String>) {
-    let mut parser_config = compare::default_parser_config();
-    let mut mandatories_args: Vec<String> = Vec::new();
-    for arg in args {
-        let arg_str = arg.as_str();
-        match arg_str {
-            "--pre-release-touchs-digit" => {
-                parser_config.pre_release_touchs_digit = Some(true);
-            },
-            _ => mandatories_args.push(arg),
-        }
-    }
-    (parser_config, mandatories_args)
 }
 
 fn canonical_operations(parser_config: compare::ParserConfig, args: Vec<String>) {
