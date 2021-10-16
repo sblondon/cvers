@@ -237,7 +237,14 @@ impl PrereleaseBlock {
     }
 }
 
+#[derive(Debug, Eq)]
 pub struct ParserConfig {
     pub epoch_delimiter: Option<char>,
     pub pre_release_touchs_digit: Option<bool>,
+}
+
+impl PartialEq for ParserConfig {
+    fn eq(&self, other: &Self) -> bool {
+        true
+    }
 }

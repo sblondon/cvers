@@ -14,3 +14,20 @@ pub fn parse_arguments(args: Vec<String>) -> (ParserConfig, Vec::<String>) {
     }
     (parser_config, mandatories_args)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_default_config() {
+        let args: Vec<String> = Vec::new();
+        let expected_args: Vec<String> = Vec::new();
+        let expected = (
+            super::super::compare::default_parser_config(),
+            expected_args
+        );
+        assert_eq!(parse_arguments(args), expected);
+    }
+
+}
