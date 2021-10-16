@@ -27,7 +27,8 @@ fn main() {
 fn help() {
     println!("Usage:
  - cvers compare version1 version2
- - cvers assert version1 operator version2");
+ - cvers assert version1 operator version2
+ - cvers --help");
 }
 
 fn parse_arguments(args: Vec<String>) -> (compare::ParserConfig, Vec::<String>) {
