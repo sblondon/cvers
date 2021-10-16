@@ -31,8 +31,18 @@ fn help() {
 }
 
 fn parse_arguments(args: Vec<String>) -> (compare::ParserConfig, Vec::<String>) {
-    let parser_config = compare::default_parser_config();
-    (parser_config, args)
+    let mut parser_config = compare::default_parser_config();
+    let mut mandatories_args: Vec<String> = Vec::new();
+    for arg in args {
+        let arg_str = arg.as_str();
+        match arg_str {
+            "--pre-release-touchs-digit" => {
+                parser_config.pre_release_touchs_digit = Some(true);
+            },
+            _ => mandatories_args.push(arg),
+        }
+    }
+    (parser_config, mandatories_args)
 }
 
 fn canonical_operations(parser_config: compare::ParserConfig, args: Vec<String>) {
