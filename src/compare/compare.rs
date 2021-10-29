@@ -20,7 +20,7 @@ pub fn compare(raw_version_a: &str, raw_version_b: &str, parser_config: &super::
 mod tests {
     use super::*;
     use super::super::structs;
-    use super::super::config::default_parser_config;
+    use super::super::config::permissive_parser_config;
 
     #[test]
     fn test_compare_compatible_with_tex_version() {
@@ -29,7 +29,7 @@ mod tests {
     }
 
     fn assert_equal_with_default_parser(max: &str, min: &str){
-        let parser_config: structs::ParserConfig = default_parser_config();
+        let parser_config: structs::ParserConfig = permissive_parser_config();
 
         assert_equal(max, min, &parser_config);
     }
@@ -123,7 +123,7 @@ mod tests {
         assert_not_equal_with_default_parser(MAX, MIN);
     }
     fn assert_not_equal_with_default_parser(max: &str, min: &str){
-        let parser_config: structs::ParserConfig = default_parser_config();
+        let parser_config: structs::ParserConfig = permissive_parser_config();
 
         assert_not_equal(max, min, &parser_config);
     }
@@ -275,7 +275,7 @@ mod tests {
 
     #[test]
     fn test_match_operator_for_different_versions() {
-        let parser_config: structs::ParserConfig = default_parser_config();
+        let parser_config: structs::ParserConfig = permissive_parser_config();
         const MAX: &str = "2";
         const MIN: &str = "1";
 
@@ -291,7 +291,7 @@ mod tests {
     }
     #[test]
     fn test_match_operator_for_same_version() {
-        let parser_config: structs::ParserConfig = default_parser_config();
+        let parser_config: structs::ParserConfig = permissive_parser_config();
         const VERSION: &str = "2";
 
         assert_eq!(compare_with_operator(VERSION, VERSION, "<<", &parser_config), false);

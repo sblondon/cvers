@@ -1,7 +1,7 @@
-use super::compare::{default_parser_config, ParserConfig};
+use super::compare::{permissive_parser_config, ParserConfig};
 
 pub fn parse_arguments(args: Vec<String>) -> (ParserConfig, Vec::<String>) {
-    let mut parser_config = default_parser_config();
+    let mut parser_config = permissive_parser_config();
     let mut mandatories_args: Vec<String> = Vec::new();
     for arg in args {
         let arg_str = arg.as_str();
@@ -24,7 +24,7 @@ mod tests {
         let args: Vec<String> = Vec::new();
         let expected_args: Vec<String> = Vec::new();
         let expected = (
-            super::super::compare::default_parser_config(),
+            super::super::compare::permissive_parser_config(),
             expected_args
         );
         assert_eq!(parse_arguments(args), expected);
