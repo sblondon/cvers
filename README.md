@@ -11,8 +11,7 @@ $ cvers assert version_a operator version_b
 Every parameters are mandatory.
 
 
-compare
--------
+## 'compare' parameter
 
 ```
 $ cvers compare 1.0 1.1
@@ -26,8 +25,7 @@ print the result on standard output.
  - `>`: version_a is greater than version_b
 
 
-assert
-------
+## 'assert' parameter
 
 ```
 $ cvers assert '1.1' '<<' '1.2'
@@ -47,8 +45,7 @@ Accepted operators are:
 
 The behaviour is equivalent to `dpkg --compare-versions`.
 
-
-UseCase
+## UseCase
 
 ```sh
 current_version=$(/usr/sbin/logrotate 2>&1 | head -n 1 | cut -d' ' -f 2)
