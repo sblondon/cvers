@@ -11,7 +11,7 @@ $ cvers assert version_a operator version_b
 Every parameters are mandatory.
 
 
-## 'compare' parameter
+## `compare` parameter
 
 ```
 $ cvers compare 1.0 1.1
@@ -25,7 +25,7 @@ print the result on standard output.
  - `>`: version_a is greater than version_b
 
 
-## 'assert' parameter
+## `assert` parameter
 
 ```
 $ cvers assert '1.1' '<<' '1.2'
@@ -57,6 +57,13 @@ else
     /usr/sbin/logrotate /path/to/file.conf -l "/path/to/log/dir"
 fi
 ```
+
+## versioning
+
+ - [semantic versioning](https://semver.org/)
+ - [debian](https://www.debian.org/doc/debian-policy/ch-controlfields.html#version)
+ - [python](https://peps.python.org/pep-0440/)
+
 
 
 
