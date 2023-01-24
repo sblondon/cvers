@@ -24,6 +24,8 @@ print the result on standard output.
  - `=`: version_a equals version_b
  - `>`: version_a is greater than version_b
 
+In previous example, version_a is 1.0 and version_b is 1.1.
+
 
 ## `assert` parameter
 
