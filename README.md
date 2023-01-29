@@ -47,7 +47,7 @@ Accepted operators are:
 
 The behaviour is equivalent to `dpkg --compare-versions`.
 
-## UseCase
+## Use-case example
 
 ```sh
 current_version=$(/usr/sbin/logrotate 2>&1 | head -n 1 | cut -d' ' -f 2)
@@ -60,7 +60,7 @@ else
 fi
 ```
 
-## versioning
+## Versioning schemes
 
  - [semantic versioning](https://semver.org/)
  - [debian](https://www.debian.org/doc/debian-policy/ch-controlfields.html#version)
