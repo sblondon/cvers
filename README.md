@@ -67,6 +67,13 @@ fi
  - [python](https://peps.python.org/pep-0440/)
 
 
+## Structure parser
+
+```
+[epoch][separator][main chunk][char touches main chunk][suffix]
+```
+
+`suffix` could be prerelease or postrelease data.
 
 
 autre nom possible :
