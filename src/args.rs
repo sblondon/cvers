@@ -29,21 +29,22 @@ mod tests {
         expected_args.push(String::from("verb"));
         expected_args.push(String::from("first value"));
         expected_args.push(String::from("second value"));
-        let expected = (
-            super::super::compare::permissive_parser_config(),
-            expected_args
-        );
-        assert_eq!(parse_arguments(args), expected);
+
+        let parsed_args: (ParserConfig, Vec::<String>) = parse_arguments(args);
+
+        assert_eq!(parsed_args.0, super::super::compare::permissive_parser_config());
+        assert_eq!(parsed_args.1, expected_args);
     }
 
+    #[test]
     fn test_default_config() {
         let args: Vec<String> = Vec::new();
         let expected_args: Vec<String> = Vec::new();
-        let expected = (
-            super::super::compare::permissive_parser_config(),
-            expected_args
-        );
-        assert_eq!(parse_arguments(args), expected);
+
+        let parsed_args: (ParserConfig, Vec::<String>) = parse_arguments(args);
+
+        assert_eq!(parsed_args.0, super::super::compare::permissive_parser_config());
+        assert_eq!(parsed_args.1, expected_args);
     }
 
     #[test]
