@@ -20,6 +20,22 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_mandatory_parameters() {
+        let mut args: Vec<String> = Vec::new();
+        args.push(String::from("verb"));
+        args.push(String::from("first value"));
+        args.push(String::from("second value"));
+        let mut expected_args: Vec<String> = Vec::new();
+        expected_args.push(String::from("verb"));
+        expected_args.push(String::from("first value"));
+        expected_args.push(String::from("second value"));
+        let expected = (
+            super::super::compare::permissive_parser_config(),
+            expected_args
+        );
+        assert_eq!(parse_arguments(args), expected);
+    }
+
     fn test_default_config() {
         let args: Vec<String> = Vec::new();
         let expected_args: Vec<String> = Vec::new();
@@ -28,6 +44,16 @@ mod tests {
             expected_args
         );
         assert_eq!(parse_arguments(args), expected);
+    }
+
+    #[test]
+    fn test_enable_pre_release_touchs_digit_option() {
+        let mut args: Vec<String> = Vec::new();
+        args.push(String::from("--pre-release-touchs-digit"));
+        let mut expected: ParserConfig = super::super::compare::permissive_parser_config();
+        expected.pre_release_touchs_digit = Some(true);
+
+        assert_eq!(parse_arguments(args).0, expected);
     }
 
 }
