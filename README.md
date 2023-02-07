@@ -83,7 +83,8 @@ fi
  - `sort -V`
 
 
-autre nom possible :
- - vnum pour Version NUMbers
+## Rename project?
+
+ - vnum for Version NUMbers
  - vrsns
  - versn
