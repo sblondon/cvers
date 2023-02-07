@@ -76,6 +76,13 @@ fi
 `suffix` could be prerelease or postrelease data.
 
 
+## Other solutions
+
+ - shell script like [this one](https://stackoverflow.com/questions/4023830/how-to-compare-two-strings-in-dot-separated-version-format-in-bash) or [here](https://unix.stackexchange.com/questions/285924/how-to-compare-a-programs-version-in-a-shell-script/285928)
+ - `dpkg --compare-versions` (only on debian and derivatives)
+ - `sort -V`
+
+
 autre nom possible :
  - vnum pour Version NUMbers
  - vrsns
