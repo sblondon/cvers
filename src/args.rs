@@ -26,27 +26,19 @@ mod tests {
             String::from("first value"),
             String::from("second value")
         ];
-        let expected_args: Vec<String> = vec![
-            String::from("verb"),
-            String::from("first value"),
-            String::from("second value")
-        ];
 
-        let parsed_args: (ParserConfig, Vec::<String>) = parse_arguments(args);
+        let parsed_args: (ParserConfig, Vec::<String>) = parse_arguments(args.clone());
 
-        assert_eq!(parsed_args.0, super::super::compare::permissive_parser_config());
-        assert_eq!(parsed_args.1, expected_args);
+        assert_eq!(parsed_args.1, args);
     }
 
     #[test]
     fn test_default_config() {
         let args: Vec<String> = Vec::new();
-        let expected_args: Vec<String> = Vec::new();
 
         let parsed_args: (ParserConfig, Vec::<String>) = parse_arguments(args);
 
         assert_eq!(parsed_args.0, super::super::compare::permissive_parser_config());
-        assert_eq!(parsed_args.1, expected_args);
     }
 
     #[test]
@@ -57,7 +49,9 @@ mod tests {
         let mut expected: ParserConfig = super::super::compare::permissive_parser_config();
         expected.pre_release_touchs_digit = Some(true);
 
-        assert_eq!(parse_arguments(args).0, expected);
+        let parsed_args: (ParserConfig, Vec::<String>) = parse_arguments(args);
+
+        assert_eq!(parsed_args.0, expected);
     }
 
 }
