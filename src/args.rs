@@ -44,14 +44,24 @@ mod tests {
     #[test]
     fn test_enable_pre_release_touchs_digit_option() {
         let args: Vec<String> = vec![
-            String::from("--pre-release-touchs-digit")
+            String::from("--pre-release-touchs-digit"),
+            String::from("verb"),
+            String::from("first value"),
+            String::from("second value")
         ];
+        let mandatory_args: Vec<String> = vec![
+            args[1].clone(),
+            args[2].clone(),
+            args[3].clone(),
+        ];
+
         let mut expected: ParserConfig = super::super::compare::permissive_parser_config();
         expected.pre_release_touchs_digit = Some(true);
 
         let parsed_args: (ParserConfig, Vec::<String>) = parse_arguments(args);
 
         assert_eq!(parsed_args.0, expected);
+        assert_eq!(parsed_args.1, mandatory_args);
     }
 
 }
