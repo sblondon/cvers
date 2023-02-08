@@ -3,5 +3,5 @@ name = "cvers"
 version = "0.1.0"
 authors = ["Stéphane Blondon"]
 edition = "2018"
-licence = "GPL-2.0-or-later"
+license = "GPL-2.0-or-later"
 repository = "https://github.com/sblondon/cvers"
