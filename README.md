@@ -47,6 +47,11 @@ Accepted operators are:
 
 The behaviour is equivalent to `dpkg --compare-versions`.
 
+## Optional parameter
+
+`--pre-release-touchs-digit`: if letter touches the main block (for example 1.0a), it is confired as a prelease version. By default, it is considered as a post-release version.
+
+
 ## Use-case example
 
 ```sh
