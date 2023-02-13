@@ -8,7 +8,7 @@ $ cvers compare version_a version_b
 $ cvers assert version_a operator version_b
 ```
 
-Every parameters are mandatory.
+These 3 parameters are mandatory.
 
 
 ## `compare` parameter
