@@ -47,10 +47,10 @@ Accepted operators are:
 
 The behaviour is equivalent to `dpkg --compare-versions`.
 
-## Optional parameter
+## Optional parameters
 
-`--pre-release-touchs-digit`: if letter touches the main block (for example 1.0a), it is confired as a prelease version. By default, it is considered as a post-release version.
-
+ - `--pre-release-touchs-digit`: if letter touches the main block (for example 1.0a), it is confired as a prelease version. By default, it is considered as a post-release version.
+ - `--epoch <char>`: set epoch character delimiter. By default, it's `:`.
 
 ## Use-case example
 
