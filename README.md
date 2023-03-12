@@ -52,6 +52,14 @@ The behaviour is equivalent to `dpkg --compare-versions`.
  - `--pre-release-touchs-digit`: if letter touches the main block (for example 1.0a), it is confired as a prelease version. By default, it is considered as a post-release version.
  - `--epoch <char>`: set epoch character delimiter. By default, it's `:`.
 
+Usage example:
+
+```
+$ cvers compare '1!1' '2' --epoch '!'
+>
+```
+
+
 ## Use-case example
 
 ```sh
