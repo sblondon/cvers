@@ -5,7 +5,8 @@ pub fn compare_with_operator(raw_version_a: &str, raw_version_b: &str, raw_opera
 
     (order == Ordering::Less && (raw_operator == "<<" || raw_operator == "<=")) ||
         (order == Ordering::Greater && (raw_operator == ">>" || raw_operator == "=>")) ||
-        (order == Ordering::Equal && (raw_operator == "<=" || raw_operator == "==" || raw_operator == "=>"))
+        (order == Ordering::Equal && (raw_operator == "<=" || raw_operator == "==" || raw_operator == "=>")) ||
+        ((order == Ordering::Less || order == Ordering::Greater) && raw_operator == "!=")
 }
 
 pub fn compare(raw_version_a: &str, raw_version_b: &str, parser_config: &super::structs::ParserConfig)-> Ordering{
@@ -288,6 +289,8 @@ mod tests {
         assert_eq!(compare_with_operator(MAX, MIN, "<=", &parser_config), false);
         assert_eq!(compare_with_operator(MIN, MAX, "=>", &parser_config), false);
         assert_eq!(compare_with_operator(MIN, MAX, ">>", &parser_config), false);
+        assert!(compare_with_operator(MIN, MAX, "!=", &parser_config));
+        assert!(compare_with_operator(MIN, MAX, "!=", &parser_config));
     }
     #[test]
     fn test_match_operator_for_same_version() {
@@ -299,6 +302,7 @@ mod tests {
         assert!(compare_with_operator(VERSION, VERSION, "==", &parser_config));
         assert!(compare_with_operator(VERSION, VERSION, "=>", &parser_config));
         assert_eq!(compare_with_operator(VERSION, VERSION, ">>", &parser_config), false);
+        assert_eq!(compare_with_operator(VERSION, VERSION, "!=", &parser_config), false);
     }
 
 }

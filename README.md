@@ -44,8 +44,9 @@ Accepted operators are:
  - `==`: equal
  - `>=`: greater or equal
  - `>>`: strictly greater
+ - `!=`: not equal
 
-The behaviour is equivalent to `dpkg --compare-versions`.
+The behaviour is similar to `dpkg --compare-versions`.
 
 ## Optional parameters
 

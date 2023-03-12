@@ -40,7 +40,7 @@ fn canonical_operations(parser_config: compare::ParserConfig, args: Vec<String>)
         },
         "assert" => {
             let operator = &args[3];
-            let operators: HashSet<&'static str> = ["<<", "<=", "==", "=>", ">>"].iter().cloned().collect();
+            let operators: HashSet<&'static str> = ["<<", "<=", "==", "=>", ">>", "!="].iter().cloned().collect();
             if ! operators.contains(&operator.as_str()) {
                 let error_message = format!("Invalid operator '{operator}'.", operator=operator);
                 errors::exit_on_error(error_message.as_str());
